@@ -1,0 +1,3 @@
+#!/bin/bash
+coverage run --source=lie2me -m unittest
+coverage report -m
