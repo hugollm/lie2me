@@ -10,8 +10,15 @@ class Field(object):
     def __init__(self, *args, **kwargs):
         if args:
             raise exceptions.PositionalArgumentFieldError()
-        self.messages = self.messages.copy()
+        self.messages = self._assemble_class_messages()
         self._update_attributes(kwargs)
+
+    def _assemble_class_messages(self):
+        messages = {}
+        for cls in reversed(self.__class__.__mro__):
+            if hasattr(cls, 'messages'):
+                messages.update(cls.messages)
+        return messages
 
     def _update_attributes(self, kwargs):
         for key, value in kwargs.items():

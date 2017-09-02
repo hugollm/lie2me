@@ -58,6 +58,21 @@ class FieldTestCase(TestCase):
         with self.assertRaises(exceptions.InvalidFieldArgumentError):
             field = Field(foo=42)
 
+    def test_allow_child_field_to_translate_one_message_without_touching_the_others(self):
+        field = OneMessageTranslated()
+        with self.assertRaises(exceptions.FieldValidationError) as context:
+            field.validate(42)
+        self.assertEqual(context.exception.message, 'Lorem ipsum dolor sit amet')
+        with self.assertRaises(exceptions.FieldValidationError) as context:
+            field.validate(None)
+        self.assertEqual(context.exception.message, 'This field is required')
+
+    def test_child_class_field_messages_overwrite_parent_messages(self):
+        field = RequiredMessageTranslated()
+        with self.assertRaises(exceptions.FieldValidationError) as context:
+            field.validate(None)
+        self.assertEqual(context.exception.message, 'Lorem ipsum dolor sit amet')
+
 
 class RawMessage(Field):
 
@@ -74,3 +89,21 @@ class Boolean(Field):
 
 class AutomaticallyConfigured(Field):
     min = 0
+
+
+class OneMessageTranslated(Field):
+
+    messages = {
+        'foo': 'Lorem ipsum dolor sit amet',
+    }
+
+    def validation(self, value):
+        value = super(OneMessageTranslated, self).validation(value)
+        raise self.error('foo')
+
+
+class RequiredMessageTranslated(Field):
+
+    messages = {
+        'required': 'Lorem ipsum dolor sit amet',
+    }
