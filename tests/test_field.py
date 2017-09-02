@@ -43,8 +43,20 @@ class FieldTestCase(TestCase):
             field.validate(42)
         self.assertEqual(context.exception.message, 'Raw message.')
 
+    def test_child_field_does_not_need_to_check_for_null_values_if_its_optional(self):
+        field = Boolean(required=False)
+        value = field.validate(None)
+        self.assertEqual(value, None)
+
 
 class RawMessage(Field):
 
     def validate(self, value):
         raise self.error('Raw message.')
+
+
+class Boolean(Field):
+
+    def validation(self, value):
+        value = super(Boolean, self).validation(value)
+        return bool(value)

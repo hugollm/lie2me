@@ -1,4 +1,4 @@
-from .exceptions import FieldValidationError
+from .exceptions import FieldValidationError, FieldAbortValidation
 
 
 class Field(object):
@@ -14,12 +14,21 @@ class Field(object):
         self.messages.update(messages or {})
 
     def validate(self, value):
+        try:
+            return self.validation(value)
+        except FieldAbortValidation as e:
+            return e.value
+
+    def validation(self, value):
         if self.required and self.default is None and value is None:
             raise self.error('required')
         if value is None:
-            return self.default
+            raise self.abort(self.default)
         return value
 
     def error(self, message):
         message = self.messages.get(message, message)
         return FieldValidationError(message)
+
+    def abort(self, value):
+        raise FieldAbortValidation(value)

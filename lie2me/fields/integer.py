@@ -18,10 +18,8 @@ class Integer(Field):
         self.min = min
         self.max = max
 
-    def validate(self, value):
-        value = super(Integer, self).validate(value)
-        if value is None:
-            return value
+    def validation(self, value):
+        value = super(Integer, self).validation(value)
         try:
             value = int(value)
         except ValueError:
