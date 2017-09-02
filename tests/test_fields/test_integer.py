@@ -17,6 +17,12 @@ class IntegerTestCase(TestCase):
             field.validate('foobar')
         self.assertEqual(context.exception.message, 'A valid integer must be provided')
 
+    def test_invalid_integer_when_passing_unexpected_type(self):
+        field = Integer()
+        with self.assertRaises(FieldValidationError) as context:
+            field.validate([])
+        self.assertEqual(context.exception.message, 'A valid integer must be provided')
+
     def test_min_constraint(self):
         field = Integer(min=3)
         with self.assertRaises(FieldValidationError) as context:

@@ -16,7 +16,7 @@ class Integer(Field):
         value = super(Integer, self).validation(value)
         try:
             value = int(value)
-        except ValueError:
+        except:
             raise self.error('type')
         if self.min is not None and value < self.min:
             raise self.error('min')
