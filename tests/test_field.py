@@ -36,17 +36,26 @@ class FieldTestCase(TestCase):
         self.assertEqual(Field.messages, {'required': 'This field is required'})
 
     def test_error_message_is_unchanged_if_its_not_a_key_in_the_messages_dictionary(self):
+        class RawMessage(Field):
+            def validation(self, value):
+                raise self.error('Raw message.')
         field = RawMessage()
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(42)
         self.assertEqual(context.exception.message, 'Raw message.')
 
     def test_child_field_does_not_need_to_check_for_null_values_if_its_optional(self):
+        class Boolean(Field):
+            def validation(self, value):
+                value = super(Boolean, self).validation(value)
+                return bool(value)
         field = Boolean(required=False)
         value = field.validate(None)
         self.assertEqual(value, None)
 
     def test_child_field_does_not_need_custom_init_method_to_configure_its_attributes(self):
+        class AutomaticallyConfigured(Field):
+            min = 0
         field = AutomaticallyConfigured(min=3)
         self.assertEqual(field.min, 3)
 
@@ -59,6 +68,11 @@ class FieldTestCase(TestCase):
             field = Field(foo=42)
 
     def test_allow_child_field_to_translate_one_message_without_touching_the_others(self):
+        class OneMessageTranslated(Field):
+            messages = {'foo': 'Lorem ipsum dolor sit amet'}
+            def validation(self, value):
+                value = super(OneMessageTranslated, self).validation(value)
+                raise self.error('foo')
         field = OneMessageTranslated()
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(42)
@@ -68,42 +82,9 @@ class FieldTestCase(TestCase):
         self.assertEqual(context.exception.message, 'This field is required')
 
     def test_child_class_field_messages_overwrite_parent_messages(self):
+        class RequiredMessageTranslated(Field):
+            messages = {'required': 'Lorem ipsum dolor sit amet'}
         field = RequiredMessageTranslated()
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(None)
         self.assertEqual(context.exception.message, 'Lorem ipsum dolor sit amet')
-
-
-class RawMessage(Field):
-
-    def validate(self, value):
-        raise self.error('Raw message.')
-
-
-class Boolean(Field):
-
-    def validation(self, value):
-        value = super(Boolean, self).validation(value)
-        return bool(value)
-
-
-class AutomaticallyConfigured(Field):
-    min = 0
-
-
-class OneMessageTranslated(Field):
-
-    messages = {
-        'foo': 'Lorem ipsum dolor sit amet',
-    }
-
-    def validation(self, value):
-        value = super(OneMessageTranslated, self).validation(value)
-        raise self.error('foo')
-
-
-class RequiredMessageTranslated(Field):
-
-    messages = {
-        'required': 'Lorem ipsum dolor sit amet',
-    }
