@@ -1,4 +1,4 @@
-from .exceptions import FieldValidationError, FieldAbortValidation
+from . import exceptions
 
 
 class Field(object):
@@ -7,16 +7,25 @@ class Field(object):
     default = None
     messages = {'required': 'This field is required'}
 
-    def __init__(self, required=True, default=None, messages=None):
-        self.required = required
-        self.default = default
+    def __init__(self, *args, **kwargs):
+        if args:
+            raise exceptions.PositionalArgumentFieldError()
         self.messages = self.messages.copy()
-        self.messages.update(messages or {})
+        self._update_attributes(kwargs)
+
+    def _update_attributes(self, kwargs):
+        for key, value in kwargs.items():
+            if not hasattr(self, key):
+                raise exceptions.InvalidFieldArgumentError(self.__class__, key)
+            if key == 'messages':
+                self.messages.update(value)
+            else:
+                setattr(self, key, value)
 
     def validate(self, value):
         try:
             return self.validation(value)
-        except FieldAbortValidation as e:
+        except exceptions.FieldAbortValidation as e:
             return e.value
 
     def validation(self, value):
@@ -28,7 +37,7 @@ class Field(object):
 
     def error(self, message):
         message = self.messages.get(message, message)
-        return FieldValidationError(message)
+        return exceptions.FieldValidationError(message)
 
     def abort(self, value):
-        raise FieldAbortValidation(value)
+        raise exceptions.FieldAbortValidation(value)

@@ -13,11 +13,6 @@ class Integer(Field):
         'max': 'Value is too high',
     }
 
-    def __init__(self, min=None, max=None, *args, **kwargs):
-        super(Integer, self).__init__(*args, **kwargs)
-        self.min = min
-        self.max = max
-
     def validation(self, value):
         value = super(Integer, self).validation(value)
         try:
