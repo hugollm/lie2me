@@ -1,3 +1,4 @@
+import re
 from . import exceptions
 
 
@@ -44,7 +45,15 @@ class Field(object):
 
     def error(self, message):
         message = self.messages.get(message, message)
+        message = self.format_message(message)
         return exceptions.FieldValidationError(message)
 
     def abort(self, value):
         raise exceptions.FieldAbortValidation(value)
+
+    def format_message(self, message):
+        matches = re.findall(r'\{([a-zA-Z][a-zA-Z0-9_]*?)\}', message)
+        for match in matches:
+            placeholder = '{' + match + '}'
+            message = message.replace(placeholder, str(getattr(self, match)))
+        return message

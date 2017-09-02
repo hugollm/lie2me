@@ -88,3 +88,13 @@ class FieldTestCase(TestCase):
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(None)
         self.assertEqual(context.exception.message, 'Lorem ipsum dolor sit amet')
+
+    def test_field_can_use_its_arguments_in_messages(self):
+        class ArgumentInMessage(Field):
+            min = 3
+            def validation(self, value):
+                raise self.error('Sample attributes: {min} {min} {required}')
+        field = ArgumentInMessage()
+        with self.assertRaises(exceptions.FieldValidationError) as context:
+            field.validate(42)
+        self.assertEqual(context.exception.message, 'Sample attributes: 3 3 True')
