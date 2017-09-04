@@ -50,3 +50,8 @@ class TextTestCase(TestCase):
         with self.assertRaises(FieldValidationError) as context:
             field.validate('foobar')
         self.assertEqual(context.exception.message, 'Value may not have more than 5 characters')
+
+    def test_text_is_not_trimmed_if_configuration_is_disabled(self):
+        field = Text(trim=False)
+        value = field.validate('  foobar  ')
+        self.assertEqual(value, '  foobar  ')

@@ -5,6 +5,7 @@ class Text(Field):
 
     min = None
     max = None
+    trim = True
 
     messages = {
         'min': 'Value may not have less than {min} characters',
@@ -13,7 +14,9 @@ class Text(Field):
 
     def validation(self, value):
         value = super(Text, self).validation(value)
-        value = str(value).strip()
+        value = str(value)
+        if self.trim:
+            value = value.strip()
         if not value:
             if self.default is not None:
                 return self.default
