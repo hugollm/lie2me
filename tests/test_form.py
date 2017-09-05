@@ -1,0 +1,112 @@
+from unittest import TestCase
+
+from lie2me import Form, fields
+from lie2me.exceptions import BadFormValidationError
+
+
+class FormTestCase(TestCase):
+
+    def test_form_without_fields_is_always_valid(self):
+        form = Form({'foo': 'bar'})
+        form.validate()
+        self.assertEqual(form.errors, {})
+
+    def test_form_data_is_accessible_and_unchanged_before_validation(self):
+        form = SignupForm({
+            'name': 'John Doe',
+            'email': 'john.doe@domain.com',
+            'password': '123',
+            'password2': '123',
+        })
+        self.assertEqual(form.data, {
+            'name': 'John Doe',
+            'email': 'john.doe@domain.com',
+            'password': '123',
+            'password2': '123',
+        })
+
+    def test_form_validation_against_valid_data(self):
+        form = SignupForm({
+            'name': 'John Doe',
+            'email': 'john.doe@domain.com',
+            'password': '123',
+            'password2': '123',
+        })
+        self.assertEqual(form.validate(), True)
+        self.assertEqual(form.errors, {})
+
+    def test_successful_validation_replaces_form_data_with_new_data(self):
+        form = SignupForm({
+            'name': '  John Doe  ',
+            'email': 'john.doe@domain.com',
+            'password': '123',
+            'password2': '123',
+        })
+        form.validate()
+        self.assertEqual(form.data, {
+            'name': 'John Doe',
+            'email': 'john.doe@domain.com',
+            'password': '123',
+            'password2': '123',
+            'observations': None,
+        })
+
+    def test_unsuccessful_validation_does_not_replace_form_data_with_new_data(self):
+        form = SignupForm({
+            'name': '  John Doe  ',
+        })
+        form.validate()
+        self.assertEqual(form.data['name'], '  John Doe  ')
+
+    def test_form_validation_against_invalid_data(self):
+        form = SignupForm({
+            'name': 'a' * 201,
+            'email': 'john.doe@domain',
+            'password': '123',
+            'password2': '1234',
+        })
+        self.assertEqual(form.validate(), False)
+        self.assertEqual(form.errors, {
+            'name': 'Value may not have more than 200 characters',
+            'email': 'Not a valid email address',
+            'password2': 'Password confirmation does not match',
+        })
+
+    def test_form_has_no_errors_before_calling_validate_even_if_data_is_invalid(self):
+        form = SignupForm({
+            'name': 'a' * 201,
+            'email': 'john.doe@domain',
+            'password': '12',
+            'password2': '123',
+        })
+        self.assertEqual(form.errors, {})
+
+    def test_form_without_errors_returning_none_in_validation_method_raises_exception(self):
+        form = BadValidationForm()
+        with self.assertRaises(BadFormValidationError):
+            form.validate()
+
+
+class SignupForm(Form):
+
+    name = fields.Text(max=200)
+    email = fields.Email()
+    password = fields.Text(min=3, trim=False)
+    password2 = fields.Text(trim=False)
+    observations = fields.Text(required=False)
+
+    _ignored_field = fields.Text()
+
+    def validation(self, data):
+        if 'password' in data and 'password2' in data:
+            if data['password'] != data['password2']:
+                self.error('password2', 'Password confirmation does not match')
+        return data
+
+
+class BadValidationForm(Form):
+
+    name = fields.Text(required=False)
+
+    def validation(self, data):
+        pass
