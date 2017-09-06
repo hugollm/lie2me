@@ -86,6 +86,65 @@ class FormTestCase(TestCase):
         with self.assertRaises(BadFormValidationError):
             form.validate()
 
+    def test_nested_form_empty_data(self):
+        form = ProfileForm()
+        self.assertEqual(form.data, {'address': {}})
+
+    def test_nested_form_validated_data(self):
+        form = ProfileForm({
+            'name': 'John Doe',
+            'email': 'john.doe@domain.com',
+            'address': {
+                'street': 'Nowhere Street',
+                'number': 42,
+            }
+        })
+        self.assertEqual(form.validate(), True)
+        self.assertEqual(form.data, {
+            'name': 'John Doe',
+            'email': 'john.doe@domain.com',
+            'address': {
+                'street': 'Nowhere Street',
+                'number': 42,
+                'complement': None,
+            }
+        })
+
+    def test_nested_form_errors(self):
+        form = ProfileForm({
+            'name': 'a' * 201,
+            'email': 'john.doe@domain',
+            'address': {
+                'street': 'a' * 201,
+                'number': -1,
+            }
+        })
+        self.assertEqual(form.validate(), False)
+        self.assertEqual(form.errors, {
+            'name': 'Value may not have more than 200 characters',
+            'email': 'Not a valid email address',
+            'address': {
+                'street': 'Value may not have more than 200 characters',
+                'number': 'Value may not be lesser than 0',
+            }
+        })
+
+    def test_nested_form_with_error_only_in_nested_form(self):
+        form = ProfileForm({
+            'name': 'John Doe',
+            'email': 'john.doe@domain.com',
+            'address': {
+                'street': 'Nowhere Street',
+                'number': -1,
+            }
+        })
+        self.assertEqual(form.validate(), False)
+        self.assertEqual(form.errors, {
+            'address': {
+                'number': 'Value may not be lesser than 0',
+            }
+        })
+
 
 class SignupForm(Form):
 
@@ -110,3 +169,17 @@ class BadValidationForm(Form):
 
     def validation(self, data):
         pass
+
+
+class AddressForm(Form):
+
+    street = fields.Text(max=200)
+    number = fields.Integer(min=0)
+    complement = fields.Text(required=False)
+
+
+class ProfileForm(Form):
+
+    name = fields.Text(max=200)
+    email = fields.Email()
+    address = AddressForm
