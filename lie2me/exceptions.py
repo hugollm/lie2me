@@ -29,3 +29,10 @@ class BadFormValidationError(Exception):
     def __init__(self):
         message = 'Form validation did not return any data. Did you forget to return?'
         super(BadFormValidationError, self).__init__(message)
+
+
+class InvalidListTypeError(Exception):
+
+    def __init__(self):
+        message = 'List field needs type argument to be a form class or a field instance'
+        super(InvalidListTypeError, self).__init__(message)
