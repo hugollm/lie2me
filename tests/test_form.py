@@ -145,10 +145,36 @@ class FormTestCase(TestCase):
             }
         })
 
-    def test_invalid_data_object_gives_global_error(self):
+    def test_invalid_data_object_gets_replaced_by_no_data(self):
         form = ProfileForm([1, 2, 3])
+        self.assertEqual(form.data, {
+            'address': {}
+        })
         self.assertEqual(form.validate(), False)
-        self.assertEqual(form.errors, {'global': 'Invalid data'})
+        self.assertEqual(form.errors, {
+            'name': 'This field is required',
+            'email': 'This field is required',
+            'address': {
+                'street': 'This field is required',
+                'number': 'This field is required',
+            },
+        })
+
+    def test_weird_values_as_data_do_not_cause_exceptions(self):
+        form = ProfileForm()
+        form.validate()
+        form = ProfileForm(None)
+        form.validate()
+        form = ProfileForm(42)
+        form.validate()
+        form = ProfileForm([])
+        form.validate()
+        form = ProfileForm([1, 2, 3])
+        form.validate()
+        form = ProfileForm({1, 2, 3})
+        form.validate()
+        form = ProfileForm(object())
+        form.validate()
 
 
 class SignupForm(Form):

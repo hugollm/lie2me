@@ -22,6 +22,7 @@ class Form(object):
         return fields, forms
 
     def _initialize_data(self, data):
+        data = data if hasattr(data, 'get') else None
         self.data = data or {}
         if data is None:
             for key, form in self.forms.items():
@@ -29,11 +30,9 @@ class Form(object):
 
     def validate(self):
         data = {}
-        self._validate_data()
-        if not 'global' in self.errors:
-            data.update(self._validate_fields())
-            data.update(self._validate_forms())
-            data = self.validation(data)
+        data.update(self._validate_fields())
+        data.update(self._validate_forms())
+        data = self.validation(data)
         if self.errors:
             return False
         else:
@@ -41,10 +40,6 @@ class Form(object):
                 raise BadFormValidationError()
             self.data = data
             return True
-
-    def _validate_data(self):
-        if not hasattr(self.data, 'get'):
-            self.errors['global'] = 'Invalid data'
 
     def _validate_fields(self):
         data = {}
