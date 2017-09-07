@@ -15,25 +15,25 @@ class IntegerTestCase(TestCase):
         field = Integer()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('foobar')
-        self.assertEqual(context.exception.message, 'A valid integer must be provided')
+        self.assertEqual(context.exception.data, 'A valid integer must be provided')
 
     def test_invalid_integer_when_passing_unexpected_type(self):
         field = Integer()
         with self.assertRaises(FieldValidationError) as context:
             field.validate([])
-        self.assertEqual(context.exception.message, 'A valid integer must be provided')
+        self.assertEqual(context.exception.data, 'A valid integer must be provided')
 
     def test_min_constraint(self):
         field = Integer(min=3)
         with self.assertRaises(FieldValidationError) as context:
             field.validate(2)
-        self.assertEqual(context.exception.message, 'Value may not be lesser than 3')
+        self.assertEqual(context.exception.data, 'Value may not be lesser than 3')
 
     def test_max_constraint(self):
         field = Integer(max=99)
         with self.assertRaises(FieldValidationError) as context:
             field.validate(100)
-        self.assertEqual(context.exception.message, 'Value may not be higher than 99')
+        self.assertEqual(context.exception.data, 'Value may not be higher than 99')
 
     def test_none_value_is_kept_if_field_is_optional(self):
         field = Integer(required=False)

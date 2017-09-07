@@ -23,13 +23,13 @@ class FieldTestCase(TestCase):
         field = Field()
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(None)
-        self.assertEqual(context.exception.message, 'This field is required')
+        self.assertEqual(context.exception.data, 'This field is required')
 
     def test_field_instance_can_overwrite_specific_messages(self):
         field = Field(messages={'required': 'Required field'})
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(None)
-        self.assertEqual(context.exception.message, 'Required field')
+        self.assertEqual(context.exception.data, 'Required field')
 
     def test_overwriting_field_instance_message_does_not_change_class_default_messages(self):
         field = Field(messages={'required': 'Required field'})
@@ -42,7 +42,7 @@ class FieldTestCase(TestCase):
         field = RawMessage()
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(42)
-        self.assertEqual(context.exception.message, 'Raw message.')
+        self.assertEqual(context.exception.data, 'Raw message.')
 
     def test_child_field_does_not_need_to_check_for_null_values_if_its_optional(self):
         class Boolean(Field):
@@ -76,10 +76,10 @@ class FieldTestCase(TestCase):
         field = OneMessageTranslated()
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(42)
-        self.assertEqual(context.exception.message, 'Lorem ipsum dolor sit amet')
+        self.assertEqual(context.exception.data, 'Lorem ipsum dolor sit amet')
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(None)
-        self.assertEqual(context.exception.message, 'This field is required')
+        self.assertEqual(context.exception.data, 'This field is required')
 
     def test_child_class_field_messages_overwrite_parent_messages(self):
         class RequiredMessageTranslated(Field):
@@ -87,7 +87,7 @@ class FieldTestCase(TestCase):
         field = RequiredMessageTranslated()
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(None)
-        self.assertEqual(context.exception.message, 'Lorem ipsum dolor sit amet')
+        self.assertEqual(context.exception.data, 'Lorem ipsum dolor sit amet')
 
     def test_field_can_use_its_arguments_in_messages(self):
         class ArgumentInMessage(Field):
@@ -97,4 +97,4 @@ class FieldTestCase(TestCase):
         field = ArgumentInMessage()
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(42)
-        self.assertEqual(context.exception.message, 'Sample attributes: 3 3 True')
+        self.assertEqual(context.exception.data, 'Sample attributes: 3 3 True')

@@ -47,7 +47,7 @@ class Form(object):
                 value = field.validate(self.data.get(key))
                 data[key] = value
             except FieldValidationError as e:
-                self.error(key, e.message)
+                self.errors[key] = e.data
         return data
 
     def _validate_forms(self):

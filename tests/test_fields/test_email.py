@@ -20,16 +20,16 @@ class EmailTestCase(TestCase):
         field = Email()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('foobar.com')
-        self.assertEqual(context.exception.message, 'Not a valid email address')
+        self.assertEqual(context.exception.data, 'Not a valid email address')
 
     def test_email_with_invalid_domain_does_not_pass_validation(self):
         field = Email()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('foo@bar')
-        self.assertEqual(context.exception.message, 'Not a valid email address')
+        self.assertEqual(context.exception.data, 'Not a valid email address')
 
     def test_email_cannot_be_longer_than_254_characters(self):
         field = Email()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('a' * 255)
-        self.assertEqual(context.exception.message, 'Value may not have more than 254 characters')
+        self.assertEqual(context.exception.data, 'Value may not have more than 254 characters')

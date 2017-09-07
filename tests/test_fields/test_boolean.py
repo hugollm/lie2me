@@ -20,7 +20,7 @@ class BooleanTestCase(TestCase):
         field = Boolean()
         with self.assertRaises(FieldValidationError) as context:
             value = field.validate(None)
-        self.assertEqual(context.exception.message, 'This field is required')
+        self.assertEqual(context.exception.data, 'This field is required')
 
     def test_none_value_is_kept_if_field_is_optional(self):
         field = Boolean(required=False)

@@ -20,19 +20,19 @@ class TextTestCase(TestCase):
         field = Text()
         with self.assertRaises(FieldValidationError) as context:
             field.validate(None)
-        self.assertEqual(context.exception.message, 'This field is required')
+        self.assertEqual(context.exception.data, 'This field is required')
 
     def test_validate_empty_string_raises_required_error(self):
         field = Text()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('')
-        self.assertEqual(context.exception.message, 'This field is required')
+        self.assertEqual(context.exception.data, 'This field is required')
 
     def test_string_with_just_spaces_gets_trimmed_and_raises_required_error(self):
         field = Text()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('  ')
-        self.assertEqual(context.exception.message, 'This field is required')
+        self.assertEqual(context.exception.data, 'This field is required')
 
     def test_default_value_is_respected(self):
         field = Text(default='foobar')
@@ -43,13 +43,13 @@ class TextTestCase(TestCase):
         field = Text(min=3)
         with self.assertRaises(FieldValidationError) as context:
             field.validate('ab')
-        self.assertEqual(context.exception.message, 'Value may not have less than 3 characters')
+        self.assertEqual(context.exception.data, 'Value may not have less than 3 characters')
 
     def test_max_constraint(self):
         field = Text(max=5)
         with self.assertRaises(FieldValidationError) as context:
             field.validate('foobar')
-        self.assertEqual(context.exception.message, 'Value may not have more than 5 characters')
+        self.assertEqual(context.exception.data, 'Value may not have more than 5 characters')
 
     def test_text_is_not_trimmed_if_configuration_is_disabled(self):
         field = Text(trim=False)
