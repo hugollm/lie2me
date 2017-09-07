@@ -29,9 +29,11 @@ class Form(object):
 
     def validate(self):
         data = {}
-        data.update(self._validate_fields())
-        data.update(self._validate_forms())
-        data = self.validation(data)
+        self._validate_data()
+        if not 'global' in self.errors:
+            data.update(self._validate_fields())
+            data.update(self._validate_forms())
+            data = self.validation(data)
         if self.errors:
             return False
         else:
@@ -39,6 +41,10 @@ class Form(object):
                 raise BadFormValidationError()
             self.data = data
             return True
+
+    def _validate_data(self):
+        if not hasattr(self.data, 'get'):
+            self.errors['global'] = 'Invalid data'
 
     def _validate_fields(self):
         data = {}

@@ -145,6 +145,11 @@ class FormTestCase(TestCase):
             }
         })
 
+    def test_invalid_data_object_gives_global_error(self):
+        form = ProfileForm([1, 2, 3])
+        self.assertEqual(form.validate(), False)
+        self.assertEqual(form.errors, {'global': 'Invalid data'})
+
 
 class SignupForm(Form):
 
