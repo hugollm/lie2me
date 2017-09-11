@@ -17,6 +17,11 @@ class DateTime(Field):
         'max': 'This field only accepts values until {max}',
     }
 
+    def __init__(self, *args, **kwargs):
+        super(DateTime, self).__init__(*args, **kwargs)
+        self.parsed_min = parse(self.min) if self.min else None
+        self.parsed_max = parse(self.max) if self.max else None
+
     def validation(self, value):
         value = super(DateTime, self).validation(value)
         try:
@@ -27,14 +32,10 @@ class DateTime(Field):
             raise self.error('aware')
         if self.naive is False and not value.tzinfo:
             raise self.error('naive')
-        if self.min is not None:
-            min = self.parse(self.min)
-            if value < min:
-                raise self.error('min')
-        if self.max is not None:
-            max = self.parse(self.max)
-            if value > max:
-                raise self.error('max')
+        if self.min and value < self.parsed_min:
+            raise self.error('min')
+        if self.max and value > self.parsed_max:
+            raise self.error('max')
         return value
 
     def parse(self, value):

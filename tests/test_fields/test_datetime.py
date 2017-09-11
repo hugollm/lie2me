@@ -48,6 +48,14 @@ class DateTimeTestCase(TestCase):
             field.validate('2017-09-10 22:32')
         self.assertEqual(context.exception.data, 'This field only accepts values until 2017-09-10 22:31')
 
+    def test_invalid_min_constraint_fails_at_field_construction(self):
+        with self.assertRaises(ValueError):
+            DateTime(min='invalid')
+
+    def test_invalid_max_constraint_fails_at_field_construction(self):
+        with self.assertRaises(ValueError):
+            DateTime(max='invalid')
+
     def test_month_is_parsed_first_in_ambiguous_date_by_default(self):
         field = DateTime()
         value = field.validate('10/09/2017 22:32')
