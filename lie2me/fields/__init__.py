@@ -6,3 +6,4 @@ from .text import Text
 from .email import Email
 from .list import List
 from .date import Date
+from .datetime import DateTime
