@@ -19,8 +19,8 @@ class DateTime(Field):
 
     def __init__(self, *args, **kwargs):
         super(DateTime, self).__init__(*args, **kwargs)
-        self.parsed_min = parse(self.min) if self.min else None
-        self.parsed_max = parse(self.max) if self.max else None
+        self.parsed_min = self.parse(self.min) if self.min else None
+        self.parsed_max = self.parse(self.max) if self.max else None
 
     def validation(self, value):
         value = super(DateTime, self).validation(value)
