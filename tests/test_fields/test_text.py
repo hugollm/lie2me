@@ -55,3 +55,13 @@ class TextTestCase(TestCase):
         field = Text(trim=False)
         value = field.validate('  foobar  ')
         self.assertEqual(value, '  foobar  ')
+
+    def test_pattern_constraint_against_valid_value(self):
+        field = Text(pattern=r'^[a-z]+$')
+        field.validate('abc')
+
+    def test_pattern_constraint_against_invalid_value(self):
+        field = Text(pattern=r'^[a-z]+$')
+        with self.assertRaises(FieldValidationError) as context:
+            field.validate('abc1')
+        self.assertEqual(context.exception.data, 'Invalid format')
