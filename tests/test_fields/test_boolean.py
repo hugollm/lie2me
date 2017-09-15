@@ -11,18 +11,22 @@ class BooleanTestCase(TestCase, CommonTests):
     def setUp(self):
         self.Field = Boolean
 
-    def test_value_is_converted_to_boolean(self):
+    def test_true_values(self):
         field = Boolean()
-        value = field.validate(42)
-        self.assertIsInstance(value, bool)
+        samples = [True, 'true', 'True', 'yes', 'Yes', 1, '1', 'on', 'On']
+        for sample in samples:
+            value = field.validate(sample)
+            self.assertEqual(value, True)
 
-    def test_false_value_is_not_interpreted_as_none(self):
+    def test_false_values(self):
         field = Boolean()
-        value = field.validate(False)
-        self.assertEqual(value, False)
+        samples = [False, 'false', 'False', 'no', 'No', 0, '0', 'off', 'Off']
+        for sample in samples:
+            value = field.validate(sample)
+            self.assertEqual(value, False)
 
-    def test_inherited_required_configuration(self):
+    def test_invalid_value(self):
         field = Boolean()
         with self.assertRaises(FieldValidationError) as context:
-            value = field.validate(None)
-        self.assertEqual(context.exception.data, 'This field is required')
+            field.validate(42)
+        self.assertEqual(context.exception.data, 'Invalid boolean')
