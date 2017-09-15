@@ -65,3 +65,25 @@ class TextTestCase(TestCase):
         with self.assertRaises(FieldValidationError) as context:
             field.validate('abc1')
         self.assertEqual(context.exception.data, 'Invalid format')
+
+    def test_multiline_values_are_forbidden_by_default(self):
+        field = Text()
+        with self.assertRaises(FieldValidationError) as context:
+            field.validate('foo\nbar')
+        self.assertEqual(context.exception.data, 'Value may not have more than one line')
+
+    def test_multiline_with_only_carriage_returns_are_detected(self):
+        field = Text()
+        with self.assertRaises(FieldValidationError) as context:
+            field.validate('foo\rbar')
+        self.assertEqual(context.exception.data, 'Value may not have more than one line')
+
+    def test_field_can_be_configured_to_accept_multilines(self):
+        field = Text(multiline=True)
+        value = field.validate('foo\nbar')
+        self.assertEqual(value, 'foo\nbar')
+
+    def test_pattern_against_multiline_value(self):
+        field = Text(multiline=True, pattern=r'^foo.+$')
+        value = field.validate('foo\nbar')
+        self.assertEqual(value, 'foo\nbar')

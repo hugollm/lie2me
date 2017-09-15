@@ -6,12 +6,14 @@ class Text(Field):
 
     min = None
     max = None
+    multiline = False
     pattern = None
     trim = True
 
     messages = {
         'min': 'Value may not have less than {min} characters',
         'max': 'Value may not have more than {max} characters',
+        'multiline': 'Value may not have more than one line',
         'pattern': 'Invalid format',
     }
 
@@ -29,6 +31,8 @@ class Text(Field):
             raise self.error('min')
         if self.max is not None and len(value) > self.max:
             raise self.error('max')
-        if self.pattern is not None and not re.match(self.pattern, value):
+        if not self.multiline and len(value.splitlines()) > 1:
+            raise self.error('multiline')
+        if self.pattern and not re.match(self.pattern, value, flags=re.MULTILINE|re.DOTALL):
             raise self.error('pattern')
         return value
