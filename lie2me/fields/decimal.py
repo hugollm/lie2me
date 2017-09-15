@@ -16,7 +16,7 @@ class Decimal(Field):
     def validation(self, value):
         value = super(Decimal, self).validation(value)
         try:
-            value = D(str(value))
+            value = D(value)
         except:
             raise self.error('type')
         if self.min is not None and value < D(str(self.min)):
