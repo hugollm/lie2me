@@ -92,3 +92,12 @@ class TextTestCase(TestCase):
         field = Text(multiline=True, pattern=r'^foo.+$')
         value = field.validate('foo\nbar')
         self.assertEqual(value, 'foo\nbar')
+
+    def test_empty_text_is_normalized_to_none_if_field_is_empty(self):
+        field = Text(required=False)
+        value = field.validate('')
+        self.assertEqual(value, None)
+
+    def test_empty_text_is_not_validated_against_constraints_if_field_is_optional(self):
+        field = Text(required=False, min=1)
+        field.validate('')

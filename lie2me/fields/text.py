@@ -27,6 +27,7 @@ class Text(Field):
                 return self.default
             if self.required:
                 raise self.error('required')
+            return None
         if self.min is not None and len(value) < self.min:
             raise self.error('min')
         if self.max is not None and len(value) > self.max:
