@@ -62,3 +62,12 @@ class PasswordTestCase(TestCase):
         field = Password()
         value = field.validate('foo\r\nbar')
         self.assertEqual(value, 'foo\r\nbar')
+
+    def test_empty_text_is_normalized_to_none_if_field_is_empty(self):
+        field = Password(required=False)
+        value = field.validate('')
+        self.assertEqual(value, None)
+
+    def test_empty_text_is_not_validated_against_constraints_if_field_is_optional(self):
+        field = Password(required=False, min=1)
+        field.validate('')
