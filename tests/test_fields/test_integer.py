@@ -3,8 +3,13 @@ from unittest import TestCase
 from lie2me.fields import Integer
 from lie2me.exceptions import FieldValidationError
 
+from .common_tests import CommonTests
 
-class IntegerTestCase(TestCase):
+
+class IntegerTestCase(TestCase, CommonTests):
+
+    def setUp(self):
+        self.Field = Integer
 
     def test_string_value_is_converted_to_integer(self):
         field = Integer()
@@ -34,7 +39,3 @@ class IntegerTestCase(TestCase):
         with self.assertRaises(FieldValidationError) as context:
             field.validate(100)
         self.assertEqual(context.exception.data, 'Value may not be higher than 99')
-
-    def test_none_value_is_kept_if_field_is_optional(self):
-        field = Integer(required=False)
-        self.assertEqual(field.validate(None), None)

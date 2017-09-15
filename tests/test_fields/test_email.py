@@ -3,8 +3,13 @@ from unittest import TestCase
 from lie2me.fields import Email
 from lie2me.exceptions import FieldValidationError
 
+from .common_tests import CommonTests
 
-class EmailTestCase(TestCase):
+
+class EmailTestCase(TestCase, CommonTests):
+
+    def setUp(self):
+        self.Field = Email
 
     def test_valid_email_passes_validation(self):
         field = Email()

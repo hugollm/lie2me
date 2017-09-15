@@ -4,8 +4,13 @@ from unittest import TestCase
 from lie2me.fields import Time
 from lie2me.exceptions import FieldValidationError
 
+from .common_tests import CommonTests
 
-class TimeTestCase(TestCase):
+
+class TimeTestCase(TestCase, CommonTests):
+
+    def setUp(self):
+        self.Field = Time
 
     def test_valid_naive_time_without_seconds(self):
         field = Time()

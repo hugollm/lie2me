@@ -3,8 +3,13 @@ from unittest import TestCase
 from lie2me.fields import Password
 from lie2me.exceptions import FieldValidationError
 
+from .common_tests import CommonTests
 
-class PasswordTestCase(TestCase):
+
+class PasswordTestCase(TestCase, CommonTests):
+
+    def setUp(self):
+        self.Field = Password
 
     def test_valid_password(self):
         field = Password()

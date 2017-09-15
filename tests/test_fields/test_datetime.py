@@ -4,8 +4,13 @@ from unittest import TestCase
 from lie2me.fields import DateTime
 from lie2me.exceptions import FieldValidationError
 
+from .common_tests import CommonTests
 
-class DateTimeTestCase(TestCase):
+
+class DateTimeTestCase(TestCase, CommonTests):
+
+    def setUp(self):
+        self.Field = DateTime
 
     def test_valid_naive_datetime(self):
         field = DateTime()
@@ -73,7 +78,3 @@ class DateTimeTestCase(TestCase):
         field = DateTime(dayfirst=True)
         value = field.validate('10/09/2017 22:32')
         self.assertEqual(value, datetime(2017, 9, 10, 22, 32))
-
-    def test_none_value_is_kept_if_field_is_optional(self):
-        field = DateTime(required=False)
-        self.assertEqual(field.validate(None), None)

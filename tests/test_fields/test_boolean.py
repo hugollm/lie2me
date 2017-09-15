@@ -3,8 +3,13 @@ from unittest import TestCase
 from lie2me.fields import Boolean
 from lie2me.exceptions import FieldValidationError
 
+from .common_tests import CommonTests
 
-class BooleanTestCase(TestCase):
+
+class BooleanTestCase(TestCase, CommonTests):
+
+    def setUp(self):
+        self.Field = Boolean
 
     def test_value_is_converted_to_boolean(self):
         field = Boolean()
@@ -21,11 +26,3 @@ class BooleanTestCase(TestCase):
         with self.assertRaises(FieldValidationError) as context:
             value = field.validate(None)
         self.assertEqual(context.exception.data, 'This field is required')
-
-    def test_none_value_is_kept_if_field_is_optional(self):
-        field = Boolean(required=False)
-        self.assertEqual(field.validate(None), None)
-
-    def test_inherited_default_configuration(self):
-        field = Boolean(default=False)
-        self.assertEqual(field.validate(None), False)

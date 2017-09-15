@@ -3,8 +3,13 @@ from unittest import TestCase
 from lie2me.fields import Text
 from lie2me.exceptions import FieldValidationError
 
+from .common_tests import CommonTests
 
-class TextTestCase(TestCase):
+
+class TextTestCase(TestCase, CommonTests):
+
+    def setUp(self):
+        self.Field = Text
 
     def test_valid_value(self):
         field = Text()

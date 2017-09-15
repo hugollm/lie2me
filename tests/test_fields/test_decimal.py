@@ -1,12 +1,16 @@
 from decimal import Decimal as D
-
 from unittest import TestCase
 
 from lie2me.fields import Decimal
 from lie2me.exceptions import FieldValidationError
 
+from .common_tests import CommonTests
 
-class DecimalTestCase(TestCase):
+
+class DecimalTestCase(TestCase, CommonTests):
+
+    def setUp(self):
+        self.Field = Decimal
 
     def test_valid_decimal(self):
         field = Decimal()
@@ -43,7 +47,3 @@ class DecimalTestCase(TestCase):
     def test_max_constraint_is_converted_to_decimal(self):
         field = Decimal(max=3.3)
         field.validate(3.3)
-
-    def test_none_value_is_kept_if_field_is_optional(self):
-        field = Decimal(required=False)
-        self.assertEqual(field.validate(None), None)
