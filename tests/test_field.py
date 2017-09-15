@@ -4,10 +4,15 @@ from lie2me import Field, exceptions
 
 class FieldTestCase(TestCase):
 
-    def test_validate_returns_value(self):
+    def test_validate_returns_value_converted_as_string(self):
         field = Field()
         value = field.validate(42)
-        self.assertEqual(value, 42)
+        self.assertEqual(value, '42')
+
+    def test_validated_values_are_trimmed_by_default(self):
+        field = Field()
+        value = field.validate('  42  ')
+        self.assertEqual(value, '42')
 
     def test_field_is_required_by_default(self):
         field = Field()
@@ -23,6 +28,18 @@ class FieldTestCase(TestCase):
         field = Field()
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(None)
+        self.assertEqual(context.exception.data, 'This field is required')
+
+    def test_empty_string_triggers_required_error(self):
+        field = Field()
+        with self.assertRaises(exceptions.FieldValidationError) as context:
+            field.validate('')
+        self.assertEqual(context.exception.data, 'This field is required')
+
+    def test_string_with_only_spaces_triggers_required_error(self):
+        field = Field()
+        with self.assertRaises(exceptions.FieldValidationError) as context:
+            field.validate('  ')
         self.assertEqual(context.exception.data, 'This field is required')
 
     def test_field_instance_can_overwrite_specific_messages(self):

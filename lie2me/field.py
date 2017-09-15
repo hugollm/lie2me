@@ -6,7 +6,10 @@ class Field(object):
 
     required = True
     default = None
-    messages = {'required': 'This field is required'}
+
+    messages = {
+        'required': 'This field is required',
+    }
 
     def __init__(self, *args, **kwargs):
         if args:
@@ -37,10 +40,14 @@ class Field(object):
             return e.value
 
     def validation(self, value):
-        if self.required and self.default is None and value is None:
-            raise self.error('required')
-        if value is None:
-            raise self.abort(self.default)
+        if value is not None:
+            value = str(value).strip()
+        if not value:
+            if self.default is not None:
+                raise self.abort(self.default)
+            if self.required:
+                raise self.error('required')
+            raise self.abort(None)
         return value
 
     def error(self, message):

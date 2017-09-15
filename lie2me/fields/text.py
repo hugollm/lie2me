@@ -18,16 +18,16 @@ class Text(Field):
     }
 
     def validation(self, value):
-        value = super(Text, self).validation(value)
-        value = str(value)
-        if self.trim:
-            value = value.strip()
+        if value is not None:
+            value = str(value)
+            if self.trim:
+                value = value.strip()
         if not value:
             if self.default is not None:
-                return self.default
+                raise self.abort(self.default)
             if self.required:
                 raise self.error('required')
-            return None
+            raise self.abort(self.default)
         if self.min is not None and len(value) < self.min:
             raise self.error('min')
         if self.max is not None and len(value) > self.max:

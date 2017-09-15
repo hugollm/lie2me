@@ -12,14 +12,14 @@ class Password(Field):
     }
 
     def validation(self, value):
-        value = super(Password, self).validation(value)
-        value = str(value)
+        if value is not None:
+            value = str(value)
         if not value:
             if self.default is not None:
-                return self.default
+                raise self.abort(self.default)
             if self.required:
                 raise self.error('required')
-            return None
+            raise self.abort(None)
         if self.min is not None and len(value) < self.min:
             raise self.error('min')
         if self.max is not None and len(value) > self.max:

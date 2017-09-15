@@ -6,7 +6,7 @@ from lie2me.exceptions import FieldValidationError
 from .common_tests import CommonTests
 
 
-class PasswordTestCase(TestCase, CommonTests):
+class PasswordTestCase(TestCase):
 
     def setUp(self):
         self.Field = Password
