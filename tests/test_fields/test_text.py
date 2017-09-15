@@ -11,6 +11,11 @@ class TextTestCase(TestCase):
         value = field.validate('foobar')
         self.assertEqual(value, 'foobar')
 
+    def test_valid_non_string_value(self):
+        field = Text()
+        value = field.validate(42)
+        self.assertEqual(value, '42')
+
     def test_valid_value_gets_trimmed(self):
         field = Text()
         value = field.validate('  foobar  ')
