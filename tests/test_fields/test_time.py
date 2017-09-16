@@ -11,6 +11,7 @@ class TimeTestCase(TestCase, CommonTests):
 
     def setUp(self):
         self.Field = Time
+        self.valid_default = '21:06'
 
     def test_valid_naive_time_without_seconds(self):
         field = Time()

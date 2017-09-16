@@ -10,6 +10,7 @@ class FloatTestCase(TestCase, CommonTests):
 
     def setUp(self):
         self.Field = Float
+        self.valid_default = 3.5
 
     def test_valid_float(self):
         field = Float()

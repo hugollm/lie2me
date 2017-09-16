@@ -10,6 +10,7 @@ class EmailTestCase(TestCase, CommonTests):
 
     def setUp(self):
         self.Field = Email
+        self.valid_default = 'foo@bar.com'
 
     def test_valid_email_passes_validation(self):
         field = Email()

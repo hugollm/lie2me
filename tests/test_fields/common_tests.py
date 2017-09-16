@@ -43,24 +43,24 @@ class CommonTests(object):
         self.assertEqual(context.exception.data, 'This field is required')
 
     def test_field_with_default_is_never_required(self):
-        field = Field(default=42, required=True)
+        field = Field(default=self.valid_default, required=True)
         value = field.validate(None)
-        self.assertEqual(value, 42)
+        self.assertEqual(value, field.validate(self.valid_default))
 
     def test_field_with_default_against_none_value(self):
-        field = self.Field(default=42)
+        field = self.Field(default=self.valid_default)
         value = field.validate(None)
-        self.assertEqual(value, 42)
+        self.assertEqual(value, field.validate(self.valid_default))
 
     def test_field_with_default_against_empty_string(self):
-        field = self.Field(default=42)
+        field = self.Field(default=self.valid_default)
         value = field.validate('')
-        self.assertEqual(value, 42)
+        self.assertEqual(value, field.validate(self.valid_default))
 
     def test_field_with_default_against_invisible_characters(self):
-        field = self.Field(default=42)
+        field = self.Field(default=self.valid_default)
         value = field.validate('  \r\n  ')
-        self.assertEqual(value, 42)
+        self.assertEqual(value, field.validate(self.valid_default))
 
     def test_field_instance_can_overwrite_specific_messages(self):
         field = self.Field(messages={'required': 'Lorem ipsum'})

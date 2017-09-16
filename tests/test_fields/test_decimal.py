@@ -11,6 +11,7 @@ class DecimalTestCase(TestCase, CommonTests):
 
     def setUp(self):
         self.Field = Decimal
+        self.valid_default = 3.6
 
     def test_valid_decimal(self):
         field = Decimal()

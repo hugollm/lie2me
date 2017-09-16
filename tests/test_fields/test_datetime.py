@@ -11,6 +11,7 @@ class DateTimeTestCase(TestCase, CommonTests):
 
     def setUp(self):
         self.Field = DateTime
+        self.valid_default = '2017-09-10 22:32'
 
     def test_valid_naive_datetime(self):
         field = DateTime()

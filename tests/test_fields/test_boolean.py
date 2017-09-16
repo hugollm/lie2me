@@ -10,6 +10,7 @@ class BooleanTestCase(TestCase, CommonTests):
 
     def setUp(self):
         self.Field = Boolean
+        self.valid_default = 'yes'
 
     def test_true_values(self):
         field = Boolean()

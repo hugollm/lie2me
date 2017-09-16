@@ -11,6 +11,7 @@ class DateTestCase(TestCase, CommonTests):
 
     def setUp(self):
         self.Field = Date
+        self.valid_default = '2017-09-10'
 
     def test_valid_date(self):
         field = Date()

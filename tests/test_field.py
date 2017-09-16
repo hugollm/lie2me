@@ -22,7 +22,7 @@ class FieldTestCase(TestCase):
     def test_field_with_a_default_value_is_never_required(self):
         field = Field(default=42)
         value = field.validate(None)
-        self.assertEqual(value, 42)
+        self.assertEqual(value, field.validate(42))
 
     def test_required_error_message(self):
         field = Field()

@@ -24,12 +24,14 @@ class Text(Field):
             value = str(value)
             if self.trim:
                 value = value.strip()
+        if not value and self.default is not None:
+            value = str(self.default)
+            if self.trim:
+                value = value.strip()
+        if not value and self.required:
+            raise self.error('required')
         if not value:
-            if self.default is not None:
-                raise self.abort(self.default)
-            if self.required:
-                raise self.error('required')
-            raise self.abort(self.default)
+            raise self.abort(None)
         if self.min is not None and len(value) < self.min:
             raise self.error('min')
         if self.max is not None and len(value) > self.max:

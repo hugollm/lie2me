@@ -10,6 +10,7 @@ class IntegerTestCase(TestCase, CommonTests):
 
     def setUp(self):
         self.Field = Integer
+        self.valid_default = 42
 
     def test_string_value_is_converted_to_integer(self):
         field = Integer()

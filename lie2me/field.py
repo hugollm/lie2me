@@ -42,11 +42,11 @@ class Field(object):
     def validation(self, value):
         if value is not None:
             value = str(value).strip()
+        if not value and self.default is not None:
+            value = str(self.default).strip()
+        if not value and self.required:
+            raise self.error('required')
         if not value:
-            if self.default is not None:
-                raise self.abort(self.default)
-            if self.required:
-                raise self.error('required')
             raise self.abort(None)
         return value
 

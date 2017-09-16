@@ -10,6 +10,7 @@ class TextTestCase(TestCase, CommonTests):
 
     def setUp(self):
         self.Field = Text
+        self.valid_default = 'foobar'
 
     def test_valid_value(self):
         field = Text()
