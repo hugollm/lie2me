@@ -106,3 +106,14 @@ class TextTestCase(TestCase, CommonTests):
     def test_empty_text_is_not_validated_against_constraints_if_field_is_optional(self):
         field = Text(required=False, min=1)
         field.validate('')
+
+    def test_options_constraint_against_valid_value(self):
+        field = Text(options=['foo', 'bar'])
+        value = field.validate('foo')
+        self.assertEqual(value, 'foo')
+
+    def test_options_constraint_against_invalid_value(self):
+        field = Text(options=['foo', 'bar'])
+        with self.assertRaises(FieldValidationError) as context:
+            field.validate('biz')
+        self.assertEqual(context.exception.data, 'Invalid option')

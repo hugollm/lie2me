@@ -8,6 +8,7 @@ class Text(Field):
     max = None
     multiline = False
     pattern = None
+    options = None
     trim = True
 
     messages = {
@@ -15,6 +16,7 @@ class Text(Field):
         'max': 'Value may not have more than {max} characters',
         'multiline': 'Value may not have more than one line',
         'pattern': 'Invalid format',
+        'options': 'Invalid option',
     }
 
     def validation(self, value):
@@ -36,4 +38,6 @@ class Text(Field):
             raise self.error('multiline')
         if self.pattern and not re.match(self.pattern, value, flags=re.MULTILINE|re.DOTALL):
             raise self.error('pattern')
+        if self.options and value not in self.options:
+            raise self.error('options')
         return value
