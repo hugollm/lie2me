@@ -5,7 +5,7 @@ from ..field import Field
 class Email(Field):
 
     messages = {
-        'type': 'Not a valid email address',
+        'type': 'Invalid email.',
     }
 
     def validation(self, value):

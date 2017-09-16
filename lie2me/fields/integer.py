@@ -7,9 +7,9 @@ class Integer(Field):
     max = None
 
     messages = {
-        'type': 'A valid integer must be provided',
-        'min': 'Value may not be lesser than {min}',
-        'max': 'Value may not be higher than {max}',
+        'type': 'Invalid number.',
+        'min': 'Must not be lower than {min}.',
+        'max': 'Must not be higher than {max}.',
     }
 
     def validation(self, value):

@@ -21,7 +21,7 @@ class FloatTestCase(TestCase, CommonTests):
         field = Float()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('a3.5')
-            self.assertEqual(context.exception.data, 'A valid float must be provided')
+            self.assertEqual(context.exception.data, 'Invalid number.')
 
     def test_validated_value_gets_converted_to_float(self):
         field = Float()
@@ -32,10 +32,10 @@ class FloatTestCase(TestCase, CommonTests):
         field = Float(min=2.9)
         with self.assertRaises(FieldValidationError) as context:
             field.validate(2.8)
-        self.assertEqual(context.exception.data, 'Value may not be lesser than 2.9')
+        self.assertEqual(context.exception.data, 'Must not be lower than 2.9.')
 
     def test_max_constraint(self):
         field = Float(max=15.5)
         with self.assertRaises(FieldValidationError) as context:
             field.validate(15.51)
-        self.assertEqual(context.exception.data, 'Value may not be higher than 15.5')
+        self.assertEqual(context.exception.data, 'Must not be higher than 15.5.')

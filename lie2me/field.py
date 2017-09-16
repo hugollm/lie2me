@@ -8,7 +8,7 @@ class Field(object):
     default = None
 
     messages = {
-        'required': 'This field is required',
+        'required': 'This is required.',
     }
 
     def __init__(self, *args, **kwargs):

@@ -10,11 +10,11 @@ class DateTime(Field):
     dayfirst = False
 
     messages = {
-        'type': 'Unknown date format',
-        'naive': 'This field requires timezone information',
-        'aware': 'This field does not accept timezone information',
-        'min': 'This field only accepts values starting from {min}',
-        'max': 'This field only accepts values until {max}',
+        'type': 'Invalid date or time.',
+        'naive': 'Requires timezone information.',
+        'aware': 'Must not have timezone information.',
+        'min': 'Must not come before {min}.',
+        'max': 'Must not come after {max}.',
     }
 
     def __init__(self, *args, **kwargs):

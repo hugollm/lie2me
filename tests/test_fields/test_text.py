@@ -31,19 +31,19 @@ class TextTestCase(TestCase, CommonTests):
         field = Text()
         with self.assertRaises(FieldValidationError) as context:
             field.validate(None)
-        self.assertEqual(context.exception.data, 'This field is required')
+        self.assertEqual(context.exception.data, 'This is required.')
 
     def test_validate_empty_string_raises_required_error(self):
         field = Text()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('')
-        self.assertEqual(context.exception.data, 'This field is required')
+        self.assertEqual(context.exception.data, 'This is required.')
 
     def test_string_with_just_spaces_gets_trimmed_and_raises_required_error(self):
         field = Text()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('  ')
-        self.assertEqual(context.exception.data, 'This field is required')
+        self.assertEqual(context.exception.data, 'This is required.')
 
     def test_default_value_is_respected(self):
         field = Text(default='foobar')
@@ -54,13 +54,13 @@ class TextTestCase(TestCase, CommonTests):
         field = Text(min=3)
         with self.assertRaises(FieldValidationError) as context:
             field.validate('ab')
-        self.assertEqual(context.exception.data, 'Value may not have less than 3 characters')
+        self.assertEqual(context.exception.data, 'Must be at least 3 characters long.')
 
     def test_max_constraint(self):
         field = Text(max=5)
         with self.assertRaises(FieldValidationError) as context:
             field.validate('foobar')
-        self.assertEqual(context.exception.data, 'Value may not have more than 5 characters')
+        self.assertEqual(context.exception.data, 'Must have no more than 5 characters.')
 
     def test_text_is_not_trimmed_if_configuration_is_disabled(self):
         field = Text(trim=False)
@@ -75,19 +75,19 @@ class TextTestCase(TestCase, CommonTests):
         field = Text(pattern=r'^[a-z]+$')
         with self.assertRaises(FieldValidationError) as context:
             field.validate('abc1')
-        self.assertEqual(context.exception.data, 'Invalid format')
+        self.assertEqual(context.exception.data, 'Invalid format.')
 
     def test_multiline_values_are_forbidden_by_default(self):
         field = Text()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('foo\nbar')
-        self.assertEqual(context.exception.data, 'Value may not have more than one line')
+        self.assertEqual(context.exception.data, 'Must not have more than one line.')
 
     def test_multiline_with_only_carriage_returns_are_detected(self):
         field = Text()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('foo\rbar')
-        self.assertEqual(context.exception.data, 'Value may not have more than one line')
+        self.assertEqual(context.exception.data, 'Must not have more than one line.')
 
     def test_field_can_be_configured_to_accept_multilines(self):
         field = Text(multiline=True)
@@ -117,4 +117,4 @@ class TextTestCase(TestCase, CommonTests):
         field = Text(options=['foo', 'bar'])
         with self.assertRaises(FieldValidationError) as context:
             field.validate('biz')
-        self.assertEqual(context.exception.data, 'Invalid option')
+        self.assertEqual(context.exception.data, 'Invalid option.')

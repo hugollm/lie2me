@@ -38,37 +38,37 @@ class TimeTestCase(TestCase, CommonTests):
         field = Time(naive=False)
         with self.assertRaises(FieldValidationError) as context:
             field.validate('21:06')
-        self.assertEqual(context.exception.data, 'This field requires timezone information')
+        self.assertEqual(context.exception.data, 'Requires timezone information.')
 
     def test_forbidden_aware_time(self):
         field = Time(naive=True)
         with self.assertRaises(FieldValidationError) as context:
             field.validate('21:06-03:00')
-        self.assertEqual(context.exception.data, 'This field does not accept timezone information')
+        self.assertEqual(context.exception.data, 'Must not have timezone information.')
 
     def test_invalid_time_format(self):
         field = Time()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('invalid')
-        self.assertEqual(context.exception.data, 'Unknown time format')
+        self.assertEqual(context.exception.data, 'Invalid time.')
 
     def test_invalid_time(self):
         field = Time()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('24:00')
-        self.assertEqual(context.exception.data, 'Unknown time format')
+        self.assertEqual(context.exception.data, 'Invalid time.')
 
     def test_min_constraint(self):
         field = Time(min='05:00')
         with self.assertRaises(FieldValidationError) as context:
             field.validate('04:59')
-        self.assertEqual(context.exception.data, 'This field only accepts values starting from 05:00')
+        self.assertEqual(context.exception.data, 'Must not come before 05:00.')
 
     def test_max_constraint(self):
         field = Time(max='05:00')
         with self.assertRaises(FieldValidationError) as context:
             field.validate('05:01')
-        self.assertEqual(context.exception.data, 'This field only accepts values until 05:00')
+        self.assertEqual(context.exception.data, 'Must not come after 05:00.')
 
     def test_invalid_min_constraint_fails_at_field_construction(self):
         with self.assertRaises(ValueError):

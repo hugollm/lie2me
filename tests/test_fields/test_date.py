@@ -27,25 +27,25 @@ class DateTestCase(TestCase, CommonTests):
         field = Date()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('invalid')
-        self.assertEqual(context.exception.data, 'Unknown date format')
+        self.assertEqual(context.exception.data, 'Invalid date.')
 
     def test_invalid_date(self):
         field = Date()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('2017-02-30')
-        self.assertEqual(context.exception.data, 'Unknown date format')
+        self.assertEqual(context.exception.data, 'Invalid date.')
 
     def test_min_constraint(self):
         field = Date(min='2017-09-11')
         with self.assertRaises(FieldValidationError) as context:
             field.validate('2017-09-10')
-        self.assertEqual(context.exception.data, 'This field only accepts values starting from 2017-09-11')
+        self.assertEqual(context.exception.data, 'Must not come before 2017-09-11.')
 
     def test_max_constraint(self):
         field = Date(max='2017-09-10')
         with self.assertRaises(FieldValidationError) as context:
             field.validate('2017-09-11')
-        self.assertEqual(context.exception.data, 'This field only accepts values until 2017-09-10')
+        self.assertEqual(context.exception.data, 'Must not come after 2017-09-10.')
 
     def test_min_constraint_is_parsed_with_the_same_arguments_as_the_value(self):
         field = Date(min='6/5/2017', dayfirst=True)

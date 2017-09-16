@@ -4,7 +4,7 @@ from ..field import Field
 class Boolean(Field):
 
     messages = {
-        'type': 'Invalid boolean',
+        'type': 'Invalid boolean.',
     }
 
     def validation(self, value):

@@ -7,7 +7,7 @@ class List(Field):
     type = None
 
     messages = {
-        'type': 'A valid list must be provided',
+        'type': 'Invalid list.',
     }
 
     def __init__(self, type, *args, **kwargs):

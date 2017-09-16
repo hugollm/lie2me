@@ -30,13 +30,13 @@ class PasswordTestCase(TestCase):
         field = Password(min=3)
         with self.assertRaises(FieldValidationError) as context:
             field.validate('ab')
-        self.assertEqual(context.exception.data, 'Value may not have less than 3 characters')
+        self.assertEqual(context.exception.data, 'Must be at least 3 characters long.')
 
     def test_max_constraint(self):
         field = Password(max=5)
         with self.assertRaises(FieldValidationError) as context:
             field.validate('foobar')
-        self.assertEqual(context.exception.data, 'Value may not have more than 5 characters')
+        self.assertEqual(context.exception.data, 'Must have no more than 5 characters.')
 
     def test_none_value_is_kept_if_field_is_optional(self):
         field = Password(required=False)
@@ -56,7 +56,7 @@ class PasswordTestCase(TestCase):
         field = Password()
         with self.assertRaises(FieldValidationError) as context:
             field.validate('')
-        self.assertEqual(context.exception.data, 'This field is required')
+        self.assertEqual(context.exception.data, 'This is required.')
 
     def test_required_error_is_not_raised_if_password_is_made_of_spaces(self):
         field = Password()

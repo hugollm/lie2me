@@ -12,11 +12,11 @@ class Text(Field):
     trim = True
 
     messages = {
-        'min': 'Value may not have less than {min} characters',
-        'max': 'Value may not have more than {max} characters',
-        'multiline': 'Value may not have more than one line',
-        'pattern': 'Invalid format',
-        'options': 'Invalid option',
+        'min': 'Must be at least {min} characters long.',
+        'max': 'Must have no more than {max} characters.',
+        'multiline': 'Must not have more than one line.',
+        'pattern': 'Invalid format.',
+        'options': 'Invalid option.',
     }
 
     def validation(self, value):

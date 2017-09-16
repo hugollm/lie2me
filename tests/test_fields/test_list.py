@@ -29,13 +29,13 @@ class ListTestCase(TestCase):
         field = List(Integer())
         with self.assertRaises(FieldValidationError) as context:
             field.validate(None)
-        self.assertEqual(context.exception.data, {'global': 'This field is required'})
+        self.assertEqual(context.exception.data, {'global': 'This is required.'})
 
     def test_required_list_against_empty_list(self):
         field = List(Integer())
         with self.assertRaises(FieldValidationError) as context:
             field.validate([])
-        self.assertEqual(context.exception.data, {'global': 'This field is required'})
+        self.assertEqual(context.exception.data, {'global': 'This is required.'})
 
     def test_optional_list_against_missing_data(self):
         field = List(Integer(), required=False)
@@ -66,19 +66,19 @@ class ListTestCase(TestCase):
         field = List(Integer())
         with self.assertRaises(FieldValidationError) as context:
             field.validate(42)
-        self.assertEqual(context.exception.data, {'global': 'A valid list must be provided'})
+        self.assertEqual(context.exception.data, {'global': 'Invalid list.'})
 
     def test_list_validation_against_invalid_type_dict(self):
         field = List(Integer())
         with self.assertRaises(FieldValidationError) as context:
             field.validate({'foo': 'bar'})
-        self.assertEqual(context.exception.data, {'global': 'A valid list must be provided'})
+        self.assertEqual(context.exception.data, {'global': 'Invalid list.'})
 
     def test_list_validation_against_invalid_data(self):
         field = List(Integer())
         with self.assertRaises(FieldValidationError) as context:
             field.validate([1, 'a', 3])
-        self.assertEqual(context.exception.data, {1: 'A valid integer must be provided'})
+        self.assertEqual(context.exception.data, {1: 'Invalid number.'})
 
     def test_form_list_validation_against_valid_data(self):
         field = List(ProfileForm)
@@ -99,8 +99,8 @@ class ListTestCase(TestCase):
                 {'name': 'Jane Doe', 'age': 17},
             ])
         self.assertEqual(context.exception.data, {
-            0: {'name': 'This field is required'},
-            1: {'age': 'Value may not be lesser than 18'}
+            0: {'name': 'This is required.'},
+            1: {'age': 'Must not be lower than 18.'}
         })
 
     def test_form_list_receives_cleaned_data_after_validation(self):

@@ -7,8 +7,8 @@ class Password(Field):
     max = None
 
     messages = {
-        'min': 'Value may not have less than {min} characters',
-        'max': 'Value may not have more than {max} characters',
+        'min': 'Must be at least {min} characters long.',
+        'max': 'Must have no more than {max} characters.',
     }
 
     def validation(self, value):

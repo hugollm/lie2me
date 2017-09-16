@@ -30,4 +30,4 @@ class BooleanTestCase(TestCase, CommonTests):
         field = Boolean()
         with self.assertRaises(FieldValidationError) as context:
             field.validate(42)
-        self.assertEqual(context.exception.data, 'Invalid boolean')
+        self.assertEqual(context.exception.data, 'Invalid boolean.')

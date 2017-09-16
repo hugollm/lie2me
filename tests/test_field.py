@@ -28,19 +28,19 @@ class FieldTestCase(TestCase):
         field = Field()
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(None)
-        self.assertEqual(context.exception.data, 'This field is required')
+        self.assertEqual(context.exception.data, 'This is required.')
 
     def test_empty_string_triggers_required_error(self):
         field = Field()
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate('')
-        self.assertEqual(context.exception.data, 'This field is required')
+        self.assertEqual(context.exception.data, 'This is required.')
 
     def test_string_with_only_spaces_triggers_required_error(self):
         field = Field()
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate('  ')
-        self.assertEqual(context.exception.data, 'This field is required')
+        self.assertEqual(context.exception.data, 'This is required.')
 
     def test_field_instance_can_overwrite_specific_messages(self):
         field = Field(messages={'required': 'Required field'})
@@ -50,7 +50,7 @@ class FieldTestCase(TestCase):
 
     def test_overwriting_field_instance_message_does_not_change_class_default_messages(self):
         field = Field(messages={'required': 'Required field'})
-        self.assertEqual(Field.messages, {'required': 'This field is required'})
+        self.assertEqual(Field.messages, {'required': 'This is required.'})
 
     def test_error_message_is_unchanged_if_its_not_a_key_in_the_messages_dictionary(self):
         class RawMessage(Field):
@@ -96,7 +96,7 @@ class FieldTestCase(TestCase):
         self.assertEqual(context.exception.data, 'Lorem ipsum dolor sit amet')
         with self.assertRaises(exceptions.FieldValidationError) as context:
             field.validate(None)
-        self.assertEqual(context.exception.data, 'This field is required')
+        self.assertEqual(context.exception.data, 'This is required.')
 
     def test_child_class_field_messages_overwrite_parent_messages(self):
         class RequiredMessageTranslated(Field):

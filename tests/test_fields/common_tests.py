@@ -22,25 +22,25 @@ class CommonTests(object):
         field = self.Field(required=True)
         with self.assertRaises(FieldValidationError) as context:
             field.validate(None)
-        self.assertEqual(context.exception.data, 'This field is required')
+        self.assertEqual(context.exception.data, 'This is required.')
 
     def test_required_field_against_empty_string(self):
         field = self.Field(required=True)
         with self.assertRaises(FieldValidationError) as context:
             field.validate('')
-        self.assertEqual(context.exception.data, 'This field is required')
+        self.assertEqual(context.exception.data, 'This is required.')
 
     def test_required_field_against_invisible_characters(self):
         field = self.Field(required=True)
         with self.assertRaises(FieldValidationError) as context:
             field.validate('  \r\n  ')
-        self.assertEqual(context.exception.data, 'This field is required')
+        self.assertEqual(context.exception.data, 'This is required.')
 
     def test_field_is_required_by_default(self):
         field = self.Field()
         with self.assertRaises(FieldValidationError) as context:
             field.validate(None)
-        self.assertEqual(context.exception.data, 'This field is required')
+        self.assertEqual(context.exception.data, 'This is required.')
 
     def test_field_with_default_is_never_required(self):
         field = Field(default=self.valid_default, required=True)

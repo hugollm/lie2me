@@ -67,9 +67,9 @@ class FormTestCase(TestCase):
         })
         self.assertEqual(form.validate(), False)
         self.assertEqual(form.errors, {
-            'name': 'Value may not have more than 200 characters',
-            'email': 'Not a valid email address',
-            'password2': 'Password confirmation does not match',
+            'name': 'Must have no more than 200 characters.',
+            'email': 'Invalid email.',
+            'password2': 'Password confirmation does not match.',
         })
 
     def test_form_has_no_errors_before_calling_validate_even_if_data_is_invalid(self):
@@ -121,11 +121,11 @@ class FormTestCase(TestCase):
         })
         self.assertEqual(form.validate(), False)
         self.assertEqual(form.errors, {
-            'name': 'Value may not have more than 200 characters',
-            'email': 'Not a valid email address',
+            'name': 'Must have no more than 200 characters.',
+            'email': 'Invalid email.',
             'address': {
-                'street': 'Value may not have more than 200 characters',
-                'number': 'Value may not be lesser than 0',
+                'street': 'Must have no more than 200 characters.',
+                'number': 'Must not be lower than 0.',
             }
         })
 
@@ -141,7 +141,7 @@ class FormTestCase(TestCase):
         self.assertEqual(form.validate(), False)
         self.assertEqual(form.errors, {
             'address': {
-                'number': 'Value may not be lesser than 0',
+                'number': 'Must not be lower than 0.',
             }
         })
 
@@ -152,11 +152,11 @@ class FormTestCase(TestCase):
         })
         self.assertEqual(form.validate(), False)
         self.assertEqual(form.errors, {
-            'name': 'This field is required',
-            'email': 'This field is required',
+            'name': 'This is required.',
+            'email': 'This is required.',
             'address': {
-                'street': 'This field is required',
-                'number': 'This field is required',
+                'street': 'This is required.',
+                'number': 'This is required.',
             },
         })
 
@@ -190,7 +190,7 @@ class SignupForm(Form):
     def validation(self, data):
         if 'password' in data and 'password2' in data:
             if data['password'] != data['password2']:
-                self.error('password2', 'Password confirmation does not match')
+                self.error('password2', 'Password confirmation does not match.')
         return data
 
 
