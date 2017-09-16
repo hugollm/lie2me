@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from lie2me.fields import Email
-from lie2me.exceptions import FieldValidationError
+from lie2me.exceptions import FieldValidationError, InvalidFieldArgumentError
 
 from .common_tests import CommonTests
 
@@ -36,5 +36,9 @@ class EmailTestCase(TestCase, CommonTests):
     def test_email_cannot_be_longer_than_254_characters(self):
         field = Email()
         with self.assertRaises(FieldValidationError) as context:
-            field.validate('a' * 255)
-        self.assertEqual(context.exception.data, 'Value may not have more than 254 characters')
+            field.validate('foo@bar.com' + ('a' * 244))
+        self.assertEqual(context.exception.data, 'Not a valid email address')
+
+    def test_email_field_does_not_accept_text_field_parameters(self):
+        with self.assertRaises(InvalidFieldArgumentError):
+            Email(min=3)

@@ -1,11 +1,17 @@
-from .text import Text
+import re
+from ..field import Field
 
 
-class Email(Text):
-
-    max = 254
-    pattern = r'^[^@]+@[^@]+\.[^@]+$'
+class Email(Field):
 
     messages = {
-        'pattern': 'Not a valid email address',
+        'type': 'Not a valid email address',
     }
+
+    def validation(self, value):
+        value = super(Email, self).validation(value)
+        if len(value) > 254:
+            raise self.error('type')
+        if not re.match(r'^[^@]+@[^@]+\.[^@]+$', value):
+            raise self.error('type')
+        return value
