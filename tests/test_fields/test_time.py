@@ -13,6 +13,11 @@ class TimeTestCase(TestCase, CommonTests):
         self.Field = Time
         self.valid_default = '21:06'
 
+    def test_native_time_object_is_valid(self):
+        field = Time()
+        value = field.validate(time(21, 6))
+        self.assertEqual(value, time(21, 6))
+
     def test_valid_naive_time_without_seconds(self):
         field = Time()
         value = field.validate('21:06')

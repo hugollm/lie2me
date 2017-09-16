@@ -13,6 +13,11 @@ class DateTimeTestCase(TestCase, CommonTests):
         self.Field = DateTime
         self.valid_default = '2017-09-10 22:32'
 
+    def test_native_datetime_object_is_valid(self):
+        field = DateTime()
+        value = field.validate(datetime(2017, 9, 10, 22, 32))
+        self.assertEqual(value, datetime(2017, 9, 10, 22, 32))
+
     def test_valid_naive_datetime(self):
         field = DateTime()
         value = field.validate('2017-09-10 22:32')

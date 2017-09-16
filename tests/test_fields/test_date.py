@@ -13,6 +13,11 @@ class DateTestCase(TestCase, CommonTests):
         self.Field = Date
         self.valid_default = '2017-09-10'
 
+    def test_native_date_object_is_valid(self):
+        field = Date()
+        value = field.validate(date(2017, 9, 10))
+        self.assertEqual(value, date(2017, 9, 10))
+
     def test_valid_date(self):
         field = Date()
         value = field.validate('2017-09-10')

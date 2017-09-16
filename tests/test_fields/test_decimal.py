@@ -13,6 +13,11 @@ class DecimalTestCase(TestCase, CommonTests):
         self.Field = Decimal
         self.valid_default = 3.6
 
+    def test_native_decimal_object_is_valid(self):
+        field = Decimal()
+        value = field.validate(D('3.6'))
+        self.assertEqual(value, D('3.6'))
+
     def test_valid_decimal(self):
         field = Decimal()
         value = field.validate(3.6)
