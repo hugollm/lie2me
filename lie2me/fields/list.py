@@ -29,14 +29,14 @@ class List(Field):
     def validate(self, values):
         if values is None:
             values = []
+        if not isinstance(values, list) and not isinstance(values, tuple):
+            raise self.error('type')
         if not values and self.default is not None:
             values = self.default
         if not values and self.required:
             raise self.error('required')
         if not values:
             raise self.abort([])
-        if not isinstance(values, list) and not isinstance(values, tuple):
-            raise self.error('type')
         if self.required and not values:
             raise self.error('required')
         if self.min is not None and len(values) < self.min:

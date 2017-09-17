@@ -84,6 +84,18 @@ class ListTestCase(TestCase):
             field.submit({'foo': 'bar'})
         self.assertEqual(context.exception.data, {'list': 'Invalid list.'})
 
+    def test_invalid_type_error_takes_precedence_over_required(self):
+        field = List(Integer())
+        with self.assertRaises(FieldValidationError) as context:
+            field.submit({})
+        self.assertEqual(context.exception.data, {'list': 'Invalid list.'})
+
+    def test_invalid_type_error_takes_precedence_over_default(self):
+        field = List(Integer(), default=[1, 2, 3])
+        with self.assertRaises(FieldValidationError) as context:
+            field.submit({})
+        self.assertEqual(context.exception.data, {'list': 'Invalid list.'})
+
     def test_list_validation_against_invalid_data(self):
         field = List(Integer())
         with self.assertRaises(FieldValidationError) as context:
