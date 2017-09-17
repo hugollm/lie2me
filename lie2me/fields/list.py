@@ -25,6 +25,8 @@ class List(Field):
     def validate(self, values):
         if values is None:
             values = []
+        if not values and self.default is not None:
+            values = self.default
         if not values and self.required:
             raise self.error('required')
         if not values:

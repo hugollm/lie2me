@@ -47,6 +47,16 @@ class ListTestCase(TestCase):
         value = field.submit([])
         self.assertEqual(value, [])
 
+    def test_default_values_against_none(self):
+        field = List(Integer(), default=[1, 2, 3])
+        value = field.submit(None)
+        self.assertEqual(value, [1, 2, 3])
+
+    def test_default_values_against_empty_list(self):
+        field = List(Integer(), default=[1, 2, 3])
+        value = field.submit([])
+        self.assertEqual(value, [1, 2, 3])
+
     def test_list_validation_against_valid_list(self):
         field = List(Integer())
         numbers = field.submit([1, 2, 3])
