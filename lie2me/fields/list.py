@@ -5,9 +5,13 @@ from ..exceptions import FieldValidationError, InvalidListTypeError
 class List(Field):
 
     type = None
+    min = None
+    max = None
 
     messages = {
         'type': 'Invalid list.',
+        'min': 'Must have at least {min} items.',
+        'max': 'Must have no more than {max} items.'
     }
 
     def __init__(self, type, *args, **kwargs):
@@ -35,6 +39,10 @@ class List(Field):
             raise self.error('type')
         if self.required and not values:
             raise self.error('required')
+        if self.min is not None and len(values) < self.min:
+            raise self.error('min')
+        if self.max is not None and len(values) > self.max:
+            raise self.error('max')
         new_values, errors = self._validate_fields_and_forms(values)
         if errors:
             raise FieldValidationError(errors)

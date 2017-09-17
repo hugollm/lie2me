@@ -90,6 +90,28 @@ class ListTestCase(TestCase):
             field.submit([1, 'a', 3])
         self.assertEqual(context.exception.data, {1: 'Invalid number.'})
 
+    def test_min_constraint_against_valid_data(self):
+        field = List(Integer(), min=3)
+        numbers = field.submit([1, 2, 3])
+        self.assertEqual(numbers, [1, 2, 3])
+
+    def test_min_constraint_against_invalid_data(self):
+        field = List(Integer(), min=3)
+        with self.assertRaises(FieldValidationError) as context:
+            field.submit([1, 2])
+        self.assertEqual(context.exception.data, {'list': 'Must have at least 3 items.'})
+
+    def test_max_constraint_against_valid_data(self):
+        field = List(Integer(), max=3)
+        numbers = field.submit([1, 2, 3])
+        self.assertEqual(numbers, [1, 2, 3])
+
+    def test_max_constraint_against_invalid_data(self):
+        field = List(Integer(), max=3)
+        with self.assertRaises(FieldValidationError) as context:
+            field.submit([1, 2, 3, 4])
+        self.assertEqual(context.exception.data, {'list': 'Must have no more than 3 items.'})
+
     def test_form_list_validation_against_valid_data(self):
         field = List(ProfileForm)
         data = field.submit([
