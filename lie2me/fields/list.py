@@ -23,14 +23,22 @@ class List(Field):
         return isinstance(self.type, type) and issubclass(self.type, Form)
 
     def validate(self, values):
-        if self.required and values is None:
+        if values is None:
+            values = []
+        if not values and self.required:
             raise self.error('required')
-        elif values is None:
-            return []
+        if not values:
+            raise self.abort([])
         if not isinstance(values, list) and not isinstance(values, tuple):
             raise self.error('type')
         if self.required and not values:
             raise self.error('required')
+        new_values, errors = self._validate_fields_and_forms(values)
+        if errors:
+            raise FieldValidationError(errors)
+        return new_values
+
+    def _validate_fields_and_forms(self, values):
         new_values = []
         errors = {}
         for i, value in enumerate(values):
@@ -47,9 +55,7 @@ class List(Field):
                     new_values.append(form.data)
                 else:
                     errors[i] = form.errors
-        if errors:
-            raise FieldValidationError(errors)
-        return new_values
+        return new_values, errors
 
     def error(self, message):
         e = super(List, self).error(message)
