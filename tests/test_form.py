@@ -11,6 +11,10 @@ class FormTestCase(TestCase):
         form.submit()
         self.assertEqual(form.errors, {})
 
+    def test_before_submission_form_valid_attribute_is_none(self):
+        form = Form()
+        self.assertEqual(form.valid, None)
+
     def test_form_data_is_accessible_and_unchanged_before_validation(self):
         form = SignupForm({
             'name': 'John Doe',
@@ -32,7 +36,8 @@ class FormTestCase(TestCase):
             'password': '123',
             'password2': '123',
         })
-        self.assertEqual(form.submit(), True)
+        form.submit()
+        self.assertEqual(form.valid, True)
         self.assertEqual(form.errors, {})
 
     def test_successful_validation_replaces_form_data_with_new_data(self):
@@ -65,7 +70,8 @@ class FormTestCase(TestCase):
             'password': '123',
             'password2': '1234',
         })
-        self.assertEqual(form.submit(), False)
+        form.submit()
+        self.assertEqual(form.valid, False)
         self.assertEqual(form.errors, {
             'name': 'Must have no more than 200 characters.',
             'email': 'Invalid email.',
@@ -99,7 +105,8 @@ class FormTestCase(TestCase):
                 'number': 42,
             }
         })
-        self.assertEqual(form.submit(), True)
+        form.submit()
+        self.assertEqual(form.valid, True)
         self.assertEqual(form.data, {
             'name': 'John Doe',
             'email': 'john.doe@domain.com',
@@ -119,7 +126,8 @@ class FormTestCase(TestCase):
                 'number': -1,
             }
         })
-        self.assertEqual(form.submit(), False)
+        form.submit()
+        self.assertEqual(form.valid, False)
         self.assertEqual(form.errors, {
             'name': 'Must have no more than 200 characters.',
             'email': 'Invalid email.',
@@ -138,7 +146,8 @@ class FormTestCase(TestCase):
                 'number': -1,
             }
         })
-        self.assertEqual(form.submit(), False)
+        form.submit()
+        self.assertEqual(form.valid, False)
         self.assertEqual(form.errors, {
             'address': {
                 'number': 'Must not be lower than 0.',
@@ -150,7 +159,8 @@ class FormTestCase(TestCase):
         self.assertEqual(form.data, {
             'address': {}
         })
-        self.assertEqual(form.submit(), False)
+        form.submit()
+        self.assertEqual(form.valid, False)
         self.assertEqual(form.errors, {
             'name': 'This is required.',
             'email': 'This is required.',

@@ -8,6 +8,7 @@ class Form(object):
         self.fields, self.forms = self._get_fields_and_nested_forms()
         self._initialize_data(data)
         self.errors = {}
+        self.valid = None
 
     def _get_fields_and_nested_forms(self):
         fields = {}
@@ -33,13 +34,11 @@ class Form(object):
         data.update(self._validate_fields())
         data.update(self._validate_forms())
         data = self.validate(data)
-        if self.errors:
-            return False
-        else:
+        self.valid = not self.errors
+        if self.valid:
             if data is None:
                 raise BadFormValidationError()
             self.data = data
-            return True
 
     def _validate_fields(self):
         data = {}
@@ -55,7 +54,8 @@ class Form(object):
         data = {}
         for key, form in self.forms.items():
             f = form(self.data.get(key))
-            if f.submit():
+            f.submit()
+            if f.valid:
                 data[key] = f.data
             else:
                 self.errors[key] = f.errors

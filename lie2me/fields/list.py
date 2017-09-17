@@ -42,7 +42,8 @@ class List(Field):
                     errors[i] = e.data
             if self._type_is_form():
                 form = self.type(value)
-                if form.submit():
+                form.submit()
+                if form.valid:
                     new_values.append(form.data)
                 else:
                     errors[i] = form.errors
