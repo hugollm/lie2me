@@ -29,13 +29,13 @@ class ListTestCase(TestCase):
         field = List(Integer())
         with self.assertRaises(FieldValidationError) as context:
             field.submit(None)
-        self.assertEqual(context.exception.data, {'global': 'This is required.'})
+        self.assertEqual(context.exception.data, {'list': 'This is required.'})
 
     def test_required_list_against_empty_list(self):
         field = List(Integer())
         with self.assertRaises(FieldValidationError) as context:
             field.submit([])
-        self.assertEqual(context.exception.data, {'global': 'This is required.'})
+        self.assertEqual(context.exception.data, {'list': 'This is required.'})
 
     def test_optional_list_against_missing_data(self):
         field = List(Integer(), required=False)
@@ -66,13 +66,13 @@ class ListTestCase(TestCase):
         field = List(Integer())
         with self.assertRaises(FieldValidationError) as context:
             field.submit(42)
-        self.assertEqual(context.exception.data, {'global': 'Invalid list.'})
+        self.assertEqual(context.exception.data, {'list': 'Invalid list.'})
 
     def test_list_validation_against_invalid_type_dict(self):
         field = List(Integer())
         with self.assertRaises(FieldValidationError) as context:
             field.submit({'foo': 'bar'})
-        self.assertEqual(context.exception.data, {'global': 'Invalid list.'})
+        self.assertEqual(context.exception.data, {'list': 'Invalid list.'})
 
     def test_list_validation_against_invalid_data(self):
         field = List(Integer())

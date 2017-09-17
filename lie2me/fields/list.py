@@ -53,4 +53,4 @@ class List(Field):
 
     def error(self, message):
         e = super(List, self).error(message)
-        raise FieldValidationError({'global': e.data})
+        raise FieldValidationError({'list': e.data})
