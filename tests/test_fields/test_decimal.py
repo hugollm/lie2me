@@ -15,41 +15,41 @@ class DecimalTestCase(TestCase, CommonTests):
 
     def test_native_decimal_object_is_valid(self):
         field = Decimal()
-        value = field.validate(D('3.6'))
+        value = field.submit(D('3.6'))
         self.assertEqual(value, D('3.6'))
 
     def test_valid_decimal(self):
         field = Decimal()
-        value = field.validate(3.6)
+        value = field.submit(3.6)
         self.assertEqual(str(value), str(3.6))
 
     def test_invalid_decimal(self):
         field = Decimal()
         with self.assertRaises(FieldValidationError) as context:
-            field.validate('a3.5')
+            field.submit('a3.5')
         self.assertEqual(context.exception.data, 'Invalid number.')
 
     def test_validated_value_gets_converted_to_decimal(self):
         field = Decimal()
-        value = field.validate(3.6)
+        value = field.submit(3.6)
         self.assertIsInstance(value, D)
 
     def test_min_constraint(self):
         field = Decimal(min=2.9)
         with self.assertRaises(FieldValidationError) as context:
-            field.validate(2.8)
+            field.submit(2.8)
         self.assertEqual(context.exception.data, 'Must not be lower than 2.9.')
 
     def test_max_constraint(self):
         field = Decimal(max=15.5)
         with self.assertRaises(FieldValidationError) as context:
-            field.validate(15.51)
+            field.submit(15.51)
         self.assertEqual(context.exception.data, 'Must not be higher than 15.5.')
 
     def test_min_constraint_is_converted_to_decimal(self):
         field = Decimal(min=3.6)
-        field.validate(3.6)
+        field.submit(3.6)
 
     def test_max_constraint_is_converted_to_decimal(self):
         field = Decimal(max=3.3)
-        field.validate(3.3)
+        field.submit(3.3)

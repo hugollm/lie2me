@@ -22,8 +22,8 @@ class DateTime(Field):
         self.parsed_min = self.parse(self.min) if self.min else None
         self.parsed_max = self.parse(self.max) if self.max else None
 
-    def validation(self, value):
-        value = super(DateTime, self).validation(value)
+    def validate(self, value):
+        value = super(DateTime, self).validate(value)
         try:
             value = self.parse(value)
         except:

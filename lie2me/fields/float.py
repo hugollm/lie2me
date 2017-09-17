@@ -12,8 +12,8 @@ class Float(Field):
         'max': 'Must not be higher than {max}.',
     }
 
-    def validation(self, value):
-        value = super(Float, self).validation(value)
+    def validate(self, value):
+        value = super(Float, self).validate(value)
         try:
             value = float(value)
         except:

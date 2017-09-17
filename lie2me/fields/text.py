@@ -19,7 +19,7 @@ class Text(Field):
         'options': 'Invalid option.',
     }
 
-    def validation(self, value):
+    def validate(self, value):
         if value is not None:
             value = str(value)
             if self.trim:

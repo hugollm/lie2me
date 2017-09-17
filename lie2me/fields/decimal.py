@@ -13,8 +13,8 @@ class Decimal(Field):
         'max': 'Must not be higher than {max}.',
     }
 
-    def validation(self, value):
-        value = super(Decimal, self).validation(value)
+    def validate(self, value):
+        value = super(Decimal, self).validate(value)
         try:
             value = D(value)
         except:

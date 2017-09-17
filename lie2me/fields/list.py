@@ -22,7 +22,7 @@ class List(Field):
     def _type_is_form(self):
         return isinstance(self.type, type) and issubclass(self.type, Form)
 
-    def validation(self, values):
+    def validate(self, values):
         if self.required and values is None:
             raise self.error('required')
         elif values is None:
@@ -36,13 +36,13 @@ class List(Field):
         for i, value in enumerate(values):
             if self._type_is_field():
                 try:
-                    new_value = self.type.validate(value)
+                    new_value = self.type.submit(value)
                     new_values.append(new_value)
                 except FieldValidationError as e:
                     errors[i] = e.data
             if self._type_is_form():
                 form = self.type(value)
-                if form.validate():
+                if form.submit():
                     new_values.append(form.data)
                 else:
                     errors[i] = form.errors

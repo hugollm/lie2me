@@ -8,7 +8,7 @@ class FormTestCase(TestCase):
 
     def test_form_without_fields_is_always_valid(self):
         form = Form({'foo': 'bar'})
-        form.validate()
+        form.submit()
         self.assertEqual(form.errors, {})
 
     def test_form_data_is_accessible_and_unchanged_before_validation(self):
@@ -32,7 +32,7 @@ class FormTestCase(TestCase):
             'password': '123',
             'password2': '123',
         })
-        self.assertEqual(form.validate(), True)
+        self.assertEqual(form.submit(), True)
         self.assertEqual(form.errors, {})
 
     def test_successful_validation_replaces_form_data_with_new_data(self):
@@ -42,7 +42,7 @@ class FormTestCase(TestCase):
             'password': '123',
             'password2': '123',
         })
-        form.validate()
+        form.submit()
         self.assertEqual(form.data, {
             'name': 'John Doe',
             'email': 'john.doe@domain.com',
@@ -55,7 +55,7 @@ class FormTestCase(TestCase):
         form = SignupForm({
             'name': '  John Doe  ',
         })
-        form.validate()
+        form.submit()
         self.assertEqual(form.data['name'], '  John Doe  ')
 
     def test_form_validation_against_invalid_data(self):
@@ -65,7 +65,7 @@ class FormTestCase(TestCase):
             'password': '123',
             'password2': '1234',
         })
-        self.assertEqual(form.validate(), False)
+        self.assertEqual(form.submit(), False)
         self.assertEqual(form.errors, {
             'name': 'Must have no more than 200 characters.',
             'email': 'Invalid email.',
@@ -84,7 +84,7 @@ class FormTestCase(TestCase):
     def test_form_without_errors_returning_none_in_validation_method_raises_exception(self):
         form = BadValidationForm()
         with self.assertRaises(BadFormValidationError):
-            form.validate()
+            form.submit()
 
     def test_nested_form_empty_data(self):
         form = ProfileForm()
@@ -99,7 +99,7 @@ class FormTestCase(TestCase):
                 'number': 42,
             }
         })
-        self.assertEqual(form.validate(), True)
+        self.assertEqual(form.submit(), True)
         self.assertEqual(form.data, {
             'name': 'John Doe',
             'email': 'john.doe@domain.com',
@@ -119,7 +119,7 @@ class FormTestCase(TestCase):
                 'number': -1,
             }
         })
-        self.assertEqual(form.validate(), False)
+        self.assertEqual(form.submit(), False)
         self.assertEqual(form.errors, {
             'name': 'Must have no more than 200 characters.',
             'email': 'Invalid email.',
@@ -138,7 +138,7 @@ class FormTestCase(TestCase):
                 'number': -1,
             }
         })
-        self.assertEqual(form.validate(), False)
+        self.assertEqual(form.submit(), False)
         self.assertEqual(form.errors, {
             'address': {
                 'number': 'Must not be lower than 0.',
@@ -150,7 +150,7 @@ class FormTestCase(TestCase):
         self.assertEqual(form.data, {
             'address': {}
         })
-        self.assertEqual(form.validate(), False)
+        self.assertEqual(form.submit(), False)
         self.assertEqual(form.errors, {
             'name': 'This is required.',
             'email': 'This is required.',
@@ -162,19 +162,19 @@ class FormTestCase(TestCase):
 
     def test_weird_values_as_data_do_not_cause_exceptions(self):
         form = ProfileForm()
-        form.validate()
+        form.submit()
         form = ProfileForm(None)
-        form.validate()
+        form.submit()
         form = ProfileForm(42)
-        form.validate()
+        form.submit()
         form = ProfileForm([])
-        form.validate()
+        form.submit()
         form = ProfileForm([1, 2, 3])
-        form.validate()
+        form.submit()
         form = ProfileForm({1, 2, 3})
-        form.validate()
+        form.submit()
         form = ProfileForm(object())
-        form.validate()
+        form.submit()
 
 
 class SignupForm(Form):
@@ -187,7 +187,7 @@ class SignupForm(Form):
 
     _ignored_field = fields.Text()
 
-    def validation(self, data):
+    def validate(self, data):
         if 'password' in data and 'password2' in data:
             if data['password'] != data['password2']:
                 self.error('password2', 'Password confirmation does not match.')
@@ -198,7 +198,7 @@ class BadValidationForm(Form):
 
     name = fields.Text(required=False)
 
-    def validation(self, data):
+    def validate(self, data):
         pass
 
 

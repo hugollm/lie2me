@@ -8,8 +8,8 @@ class Email(Field):
         'type': 'Invalid email.',
     }
 
-    def validation(self, value):
-        value = super(Email, self).validation(value)
+    def validate(self, value):
+        value = super(Email, self).validate(value)
         if len(value) > 254:
             raise self.error('type')
         if not re.match(r'^[^@]+@[^@]+\.[^@]+$', value):

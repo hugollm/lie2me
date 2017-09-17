@@ -11,7 +11,7 @@ class Password(Field):
         'max': 'Must have no more than {max} characters.',
     }
 
-    def validation(self, value):
+    def validate(self, value):
         if value is not None:
             value = str(value)
         if not value and self.default is not None:

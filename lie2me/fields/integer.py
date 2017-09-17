@@ -12,8 +12,8 @@ class Integer(Field):
         'max': 'Must not be higher than {max}.',
     }
 
-    def validation(self, value):
-        value = super(Integer, self).validation(value)
+    def validate(self, value):
+        value = super(Integer, self).validate(value)
         try:
             value = int(value)
         except:

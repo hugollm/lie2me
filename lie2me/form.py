@@ -28,11 +28,11 @@ class Form(object):
             for key, form in self.forms.items():
                 self.data[key] = {}
 
-    def validate(self):
+    def submit(self):
         data = {}
         data.update(self._validate_fields())
         data.update(self._validate_forms())
-        data = self.validation(data)
+        data = self.validate(data)
         if self.errors:
             return False
         else:
@@ -45,7 +45,7 @@ class Form(object):
         data = {}
         for key, field in self.fields.items():
             try:
-                value = field.validate(self.data.get(key))
+                value = field.submit(self.data.get(key))
                 data[key] = value
             except FieldValidationError as e:
                 self.errors[key] = e.data
@@ -55,13 +55,13 @@ class Form(object):
         data = {}
         for key, form in self.forms.items():
             f = form(self.data.get(key))
-            if f.validate():
+            if f.submit():
                 data[key] = f.data
             else:
                 self.errors[key] = f.errors
         return data
 
-    def validation(self, data):
+    def validate(self, data):
         return data
 
     def error(self, key, message):

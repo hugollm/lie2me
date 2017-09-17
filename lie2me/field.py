@@ -33,13 +33,13 @@ class Field(object):
             else:
                 setattr(self, key, value)
 
-    def validate(self, value):
+    def submit(self, value):
         try:
-            return self.validation(value)
+            return self.validate(value)
         except exceptions.FieldAbortValidation as e:
             return e.value
 
-    def validation(self, value):
+    def validate(self, value):
         if value is not None:
             value = str(value).strip()
         if not value and self.default is not None:
