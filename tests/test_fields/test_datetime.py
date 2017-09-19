@@ -29,17 +29,28 @@ class DateTimeTestCase(TestCase, CommonTests):
         self.assertEqual(value.utcoffset(), timedelta(hours=-3))
         self.assertEqual(value.replace(tzinfo=None), datetime(2017, 9, 10, 22, 32))
 
-    def test_forbidden_naive_datetime(self):
-        field = DateTime(naive=False)
+    def test_enforced_timezone_constraint_against_naive_datetime(self):
+        field = DateTime(timezone=True)
         with self.assertRaises(FieldValidationError) as context:
             field.submit('2017-09-10 22:32')
         self.assertEqual(context.exception.data, 'Requires timezone information.')
 
-    def test_forbidden_aware_datetime(self):
-        field = DateTime(naive=True)
+    def test_enforced_timezone_constraint_against_aware_datetime(self):
+        field = DateTime(timezone=True)
+        value = field.submit('2017-09-10 22:32-03:00')
+        self.assertEqual(value.utcoffset(), timedelta(hours=-3))
+        self.assertEqual(value.replace(tzinfo=None), datetime(2017, 9, 10, 22, 32))
+
+    def test_forbidden_timezone_constraint_against_aware_datetime(self):
+        field = DateTime(timezone=False)
         with self.assertRaises(FieldValidationError) as context:
             field.submit('2017-09-10 22:32-03:00')
         self.assertEqual(context.exception.data, 'Must not have timezone information.')
+
+    def test_forbidden_timezone_constraint_against_naive_datetime(self):
+        field = DateTime(timezone=False)
+        value = field.submit('2017-09-10 22:32')
+        self.assertEqual(value, datetime(2017, 9, 10, 22, 32))
 
     def test_invalid_datetime(self):
         field = DateTime()

@@ -34,17 +34,28 @@ class TimeTestCase(TestCase, CommonTests):
         self.assertEqual(value.utcoffset(), timedelta(hours=-3))
         self.assertEqual(value.replace(tzinfo=None), time(21, 6))
 
-    def test_forbidden_naive_time(self):
-        field = Time(naive=False)
+    def test_enforced_timezone_constraint_against_naive_time(self):
+        field = Time(timezone=True)
         with self.assertRaises(FieldValidationError) as context:
             field.submit('21:06')
         self.assertEqual(context.exception.data, 'Requires timezone information.')
 
-    def test_forbidden_aware_time(self):
-        field = Time(naive=True)
+    def test_enforced_timezone_constraint_against_aware_time(self):
+        field = Time(timezone=True)
+        value = field.submit('21:06-03:00')
+        self.assertEqual(value.utcoffset(), timedelta(hours=-3))
+        self.assertEqual(value.replace(tzinfo=None), time(21, 6))
+
+    def test_forbidden_timezone_constraint_against_aware_time(self):
+        field = Time(timezone=False)
         with self.assertRaises(FieldValidationError) as context:
             field.submit('21:06-03:00')
         self.assertEqual(context.exception.data, 'Must not have timezone information.')
+
+    def test_forbidden_timezone_constraint_against_naive_time(self):
+        field = Time(timezone=False)
+        value = field.submit('21:06')
+        self.assertEqual(value, time(21, 6))
 
     def test_invalid_time_format(self):
         field = Time()
