@@ -1,6 +1,25 @@
-from datetime import time, timedelta, timezone
+from datetime import date, time, timedelta, timezone
 from unittest import TestCase
-from lie2me.parsers import parse_time, parse_timezone
+from lie2me.parsers import parse_date, parse_time, parse_timezone
+
+
+class DateParserTestCase(TestCase):
+
+    def test_valid_date(self):
+        self.assertEqual(parse_date('2017-09-20'), date(2017, 9, 20))
+        self.assertEqual(parse_date('2017-9-2'), date(2017, 9, 2))
+
+    def test_invalid_dates(self):
+        self.assertEqual(parse_date(None), None)
+        self.assertEqual(parse_date([]), None)
+        self.assertEqual(parse_date(''), None)
+        self.assertEqual(parse_date('30'), None)
+        self.assertEqual(parse_date('09-30'), None)
+        self.assertEqual(parse_date('2017-02-30'), None)
+        self.assertEqual(parse_date('2017-09--20'), None)
+        self.assertEqual(parse_date('2017-09-200'), None)
+        self.assertEqual(parse_date('2017-09'), None)
+        self.assertEqual(parse_date('2017'), None)
 
 
 class TimeParserTestCase(TestCase):

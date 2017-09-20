@@ -1,5 +1,13 @@
-from datetime import time, timedelta, timezone
+from datetime import datetime, time, timedelta, timezone
 import re
+
+
+def parse_date(string):
+    string = str(string).strip()
+    try:
+        return datetime.strptime(string, '%Y-%m-%d').date()
+    except:
+        return None
 
 
 def parse_time(string):
