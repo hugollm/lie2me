@@ -85,6 +85,8 @@ class TimeZoneParserTestCase(TestCase):
 
     def test_valid_timezones(self):
         self.assertEqual(parse_timezone('-03'), timedelta(hours=-3))
+        self.assertEqual(parse_timezone('-00:30'), timedelta(minutes=-30))
+        self.assertEqual(parse_timezone('-0030'), timedelta(minutes=-30))
         self.assertEqual(parse_timezone('-03:00'), timedelta(hours=-3))
         self.assertEqual(parse_timezone('-03:35'), timedelta(hours=-3, minutes=-35))
         self.assertEqual(parse_timezone('-0300'), timedelta(hours=-3))
@@ -92,6 +94,8 @@ class TimeZoneParserTestCase(TestCase):
         self.assertEqual(parse_timezone('-23:59'), timedelta(hours=-23, minutes=-59))
         self.assertEqual(parse_timezone('-2359'), timedelta(hours=-23, minutes=-59))
         self.assertEqual(parse_timezone('+03'), timedelta(hours=3))
+        self.assertEqual(parse_timezone('+00:30'), timedelta(minutes=30))
+        self.assertEqual(parse_timezone('+0030'), timedelta(minutes=30))
         self.assertEqual(parse_timezone('+03:00'), timedelta(hours=3))
         self.assertEqual(parse_timezone('+03:35'), timedelta(hours=3, minutes=35))
         self.assertEqual(parse_timezone('+0300'), timedelta(hours=3))

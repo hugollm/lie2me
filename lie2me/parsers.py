@@ -40,7 +40,7 @@ def parse_timezone(string):
     z, signal, h, _, m = match.groups()
     h = int(signal + h) if h is not None else 0
     m = int(signal + m) if m is not None else 0
-    if h == 0 and signal == '-':
+    if h == 0 and m == 0 and signal == '-':
         return None
     if abs((h * 60) + m) > (24 * 60) - 1:
         return None
