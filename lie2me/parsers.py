@@ -1,10 +1,10 @@
-from datetime import datetime, time, timedelta, timezone
+from datetime import datetime, date, time, timedelta, timezone
 import re
 
 
 def parse_datetime(string):
     string = str(string).strip()
-    pattern = r'^([0-9]{4}-[0-9]{1,2}-[0-9]{1,2}) *( |T) *(.+)$'
+    pattern = r'^([0-9]{4}-[0-9]{2}-[0-9]{2}) *( |T) *(.+)$'
     match = re.match(pattern, string)
     if match is None:
         return None
@@ -18,8 +18,15 @@ def parse_datetime(string):
 
 def parse_date(string):
     string = str(string).strip()
+    pattern = r'^([0-9]{4})-([0-9]{2})-([0-9]{2})$'
+    match = re.match(pattern, string)
+    if match is None:
+        return None
+    y, m, d = map(int, match.groups())
+    if y is None or m is None or d is None:
+        return None
     try:
-        return datetime.strptime(string, '%Y-%m-%d').date()
+        return date(y, m, d)
     except:
         return None
 

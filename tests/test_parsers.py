@@ -28,7 +28,9 @@ class DateTimeParserTestCase(TestCase):
         self.assertEqual(parse_datetime('2017-09-20'), None)
         self.assertEqual(parse_datetime('2017-09-2019:34'), None)
         self.assertEqual(parse_datetime('2017-02-30 19:34'), None)
+        self.assertEqual(parse_datetime('2017-9-2 19:34'), None)
         self.assertEqual(parse_datetime('2017-09-20-19:34'), None)
+        self.assertEqual(parse_datetime('91-09-20 19:34'), None)
         self.assertEqual(parse_datetime('2017-09-20 19:345'), None)
         self.assertEqual(parse_datetime('2017-09-20 19:34:'), None)
         self.assertEqual(parse_datetime('2017-09-20 19:34:000'), None)
@@ -62,7 +64,6 @@ class DateParserTestCase(TestCase):
 
     def test_valid_date(self):
         self.assertEqual(parse_date('2017-09-20'), date(2017, 9, 20))
-        self.assertEqual(parse_date('2017-9-2'), date(2017, 9, 2))
 
     def test_invalid_dates(self):
         self.assertEqual(parse_date(None), None)
@@ -70,6 +71,8 @@ class DateParserTestCase(TestCase):
         self.assertEqual(parse_date(''), None)
         self.assertEqual(parse_date('30'), None)
         self.assertEqual(parse_date('09-30'), None)
+        self.assertEqual(parse_date('91-09-20'), None)
+        self.assertEqual(parse_date('2017-9-2'), None)
         self.assertEqual(parse_date('2017-02-30'), None)
         self.assertEqual(parse_date('2017-09--20'), None)
         self.assertEqual(parse_date('2017-09-200'), None)
