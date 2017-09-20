@@ -1,6 +1,61 @@
-from datetime import date, time, timedelta, timezone
+from datetime import datetime, date, time, timedelta, timezone
 from unittest import TestCase
-from lie2me.parsers import parse_date, parse_time, parse_timezone
+from lie2me.parsers import parse_datetime, parse_date, parse_time, parse_timezone
+
+
+class DateTimeParserTestCase(TestCase):
+
+    def test_valid_naive_datetimes(self):
+        self.assertEqual(parse_datetime('2017-09-20 09'), datetime(2017, 9, 20, 9))
+        self.assertEqual(parse_datetime('2017-09-20 19'), datetime(2017, 9, 20, 19))
+        self.assertEqual(parse_datetime('2017-09-20T19'), datetime(2017, 9, 20, 19))
+        self.assertEqual(parse_datetime('2017-09-20 19:34'), datetime(2017, 9, 20, 19, 34))
+        self.assertEqual(parse_datetime('2017-09-20 19:34:59'), datetime(2017, 9, 20, 19, 34, 59))
+        self.assertEqual(parse_datetime('2017-09-20T19:34:59'), datetime(2017, 9, 20, 19, 34, 59))
+
+    def test_unusual_valid_inputs(self):
+        self.assertEqual(parse_datetime('  2017-09-20    19:34  '), datetime(2017, 9, 20, 19, 34))
+        self.assertEqual(parse_datetime('2017-09-20 T 19:34'), datetime(2017, 9, 20, 19, 34))
+
+    def test_invalid_inputs(self):
+        self.assertEqual(parse_datetime(None), None)
+        self.assertEqual(parse_datetime([]), None)
+        self.assertEqual(parse_datetime(''), None)
+        self.assertEqual(parse_datetime('foobar'), None)
+
+    def test_invalid_naive_datetimes(self):
+        self.assertEqual(parse_datetime('2017'), None)
+        self.assertEqual(parse_datetime('2017-09-20'), None)
+        self.assertEqual(parse_datetime('2017-09-2019:34'), None)
+        self.assertEqual(parse_datetime('2017-02-30 19:34'), None)
+        self.assertEqual(parse_datetime('2017-09-20-19:34'), None)
+        self.assertEqual(parse_datetime('2017-09-20 19:345'), None)
+        self.assertEqual(parse_datetime('2017-09-20 19:34:'), None)
+        self.assertEqual(parse_datetime('2017-09-20 19:34:000'), None)
+
+    def test_valid_aware_datetimes(self):
+        self.assertEqual(parse_datetime('2017-09-20 19:47:35Z'), self.aware_datetime(2017, 9, 20, 19, 47, 35, offset=0))
+        self.assertEqual(parse_datetime('2017-09-20 19:47:35-03:00'), self.aware_datetime(2017, 9, 20, 19, 47, 35, offset=-3))
+        self.assertEqual(parse_datetime('2017-09-20 19:47:35-0300'), self.aware_datetime(2017, 9, 20, 19, 47, 35, offset=-3))
+        self.assertEqual(parse_datetime('2017-09-20 19:47:35-03'), self.aware_datetime(2017, 9, 20, 19, 47, 35, offset=-3))
+        self.assertEqual(parse_datetime('2017-09-20 19:47-03'), self.aware_datetime(2017, 9, 20, 19, 47, offset=-3))
+        self.assertEqual(parse_datetime('2017-09-20 19-03'), self.aware_datetime(2017, 9, 20, 19, offset=-3))
+        self.assertEqual(parse_datetime('2017-09-20 19Z'), self.aware_datetime(2017, 9, 20, 19, offset=0))
+        self.assertEqual(parse_datetime('2017-09-20T19Z'), self.aware_datetime(2017, 9, 20, 19, offset=0))
+
+    def aware_datetime(self, year, month, day, hour, minute=0, second=0, microsecond=0, offset=0):
+        dt = datetime(year, month, day, hour, minute, second, microsecond)
+        return dt.replace(tzinfo=timezone(timedelta(hours=offset)))
+
+    def test_invalid_aware_datetimes(self):
+        self.assertEqual(parse_datetime('2017-09-20 19:47:35ZZ'), None)
+        self.assertEqual(parse_datetime('2017-09-20 19:47:35-3:00'), None)
+        self.assertEqual(parse_datetime('2017-09-20 19:47:35-030'), None)
+        self.assertEqual(parse_datetime('2017-09-20 19:47:35-3'), None)
+        self.assertEqual(parse_datetime('2017-09-20 -03'), None)
+        self.assertEqual(parse_datetime('2017-09-20 19-3'), None)
+        self.assertEqual(parse_datetime('2017-09-2019Z'), None)
+        self.assertEqual(parse_datetime('2017-09-20T19-'), None)
 
 
 class DateParserTestCase(TestCase):

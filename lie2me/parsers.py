@@ -2,6 +2,20 @@ from datetime import datetime, time, timedelta, timezone
 import re
 
 
+def parse_datetime(string):
+    string = str(string).strip()
+    pattern = r'^([0-9]{4}-[0-9]{1,2}-[0-9]{1,2}) *( |T) *(.+)$'
+    match = re.match(pattern, string)
+    if match is None:
+        return None
+    d, _, t = match.groups()
+    date = parse_date(d)
+    time = parse_time(t)
+    if date is None or time is None:
+        return None
+    return datetime.combine(date, time)
+
+
 def parse_date(string):
     string = str(string).strip()
     try:
