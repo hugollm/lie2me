@@ -1,5 +1,5 @@
-from dateutil.parser import parse
 from ..field import Field
+from ..parsers import parse_time
 
 
 class Time(Field):
@@ -18,17 +18,18 @@ class Time(Field):
 
     def __init__(self, *args, **kwargs):
         super(Time, self).__init__(*args, **kwargs)
-        self.parsed_min = parse(self.min).time() if self.min else None
-        self.parsed_max = parse(self.max).time() if self.max else None
+        self.parsed_min = parse_time(self.min) if self.min else None
+        self.parsed_max = parse_time(self.max) if self.max else None
+        if self.min and self.parsed_min is None:
+            raise ValueError('Invalid min time.')
+        if self.max and self.parsed_max is None:
+            raise ValueError('Invalid max time.')
 
     def validate(self, value):
         value = super(Time, self).validate(value)
-        try:
-            value = parse(value)
-        except:
+        value = parse_time(value)
+        if value is None:
             raise self.error('type')
-        tzinfo = value.tzinfo
-        value = value.time().replace(tzinfo=tzinfo)
         if self.timezone is True and not value.tzinfo:
             raise self.error('naive')
         if self.timezone is False and value.tzinfo:
