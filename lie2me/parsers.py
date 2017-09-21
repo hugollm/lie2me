@@ -4,7 +4,7 @@ import re
 
 def parse_datetime(string):
     string = str(string).strip()
-    pattern = r'^([0-9]{4}-[0-9]{2}-[0-9]{2}) *( |T) *(.+)$'
+    pattern = r'^([0-9]{4}-[0-9]{2}-[0-9]{2})( |T)([^ ]+)$'
     match = re.match(pattern, string)
     if match is None:
         return None

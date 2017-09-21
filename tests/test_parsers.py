@@ -13,10 +13,6 @@ class DateTimeParserTestCase(TestCase):
         self.assertEqual(parse_datetime('2017-09-20 19:34:59'), datetime(2017, 9, 20, 19, 34, 59))
         self.assertEqual(parse_datetime('2017-09-20T19:34:59'), datetime(2017, 9, 20, 19, 34, 59))
 
-    def test_unusual_valid_inputs(self):
-        self.assertEqual(parse_datetime('  2017-09-20    19:34  '), datetime(2017, 9, 20, 19, 34))
-        self.assertEqual(parse_datetime('2017-09-20 T 19:34'), datetime(2017, 9, 20, 19, 34))
-
     def test_invalid_inputs(self):
         self.assertEqual(parse_datetime(None), None)
         self.assertEqual(parse_datetime([]), None)
@@ -34,6 +30,8 @@ class DateTimeParserTestCase(TestCase):
         self.assertEqual(parse_datetime('2017-09-20 19:345'), None)
         self.assertEqual(parse_datetime('2017-09-20 19:34:'), None)
         self.assertEqual(parse_datetime('2017-09-20 19:34:000'), None)
+        self.assertEqual(parse_datetime('2017-09-20  19:34'), None)
+        self.assertEqual(parse_datetime('2017-09-20 T 19:34'), None)
 
     def test_valid_aware_datetimes(self):
         self.assertEqual(parse_datetime('2017-09-20 19:47:35Z'), self.aware_datetime(2017, 9, 20, 19, 47, 35, offset=0))
