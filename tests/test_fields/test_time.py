@@ -88,7 +88,3 @@ class TimeTestCase(TestCase, CommonTests):
     def test_invalid_max_constraint_fails_at_field_construction(self):
         with self.assertRaises(ValueError):
             Time(max='invalid')
-
-    def test_none_value_is_kept_if_field_is_optional(self):
-        field = Time(required=False)
-        self.assertEqual(field.submit(None), None)
