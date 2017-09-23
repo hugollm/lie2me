@@ -3,6 +3,11 @@
 A python library to validate user input.
 
 
+[![PyPI version](https://badge.fury.io/py/lie2me.svg)](https://badge.fury.io/py/lie2me)
+[![Build Status](https://travis-ci.org/hugollm/lie2me.svg?branch=master)](https://travis-ci.org/hugollm/lie2me)
+[![Coverage Status](https://coveralls.io/repos/github/hugollm/lie2me/badge.svg?branch=master)](https://coveralls.io/github/hugollm/lie2me?branch=master)
+
+
 ## Overview
 
 This library revolves around two main concepts: forms and fields. They can be used to validate
