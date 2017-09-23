@@ -76,6 +76,14 @@ class DateTestCase(TestCase, CommonTests):
         with self.assertRaises(ValueError):
             Date(min='invalid')
 
+    def test_invalid_min_constraint_fails_at_field_construction_with_custom_format(self):
+        with self.assertRaises(ValueError):
+            Date(min='invalid', format='%d/%m/%Y')
+
     def test_invalid_max_constraint_fails_at_field_construction(self):
         with self.assertRaises(ValueError):
             Date(max='invalid')
+
+    def test_invalid_max_constraint_fails_at_field_construction_with_custom_format(self):
+        with self.assertRaises(ValueError):
+            Date(max='invalid', format='%d/%m/%Y')

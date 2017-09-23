@@ -23,8 +23,6 @@ def parse_date(string):
     if match is None:
         return None
     y, m, d = map(int, match.groups())
-    if y is None or m is None or d is None:
-        return None
     try:
         return date(y, m, d)
     except:

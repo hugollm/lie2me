@@ -37,8 +37,6 @@ class List(Field):
             raise self.error('required')
         if not values:
             raise self.abort([])
-        if self.required and not values:
-            raise self.error('required')
         if self.min is not None and len(values) < self.min:
             raise self.error('min')
         if self.max is not None and len(values) > self.max:
