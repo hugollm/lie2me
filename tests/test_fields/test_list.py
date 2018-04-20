@@ -27,133 +27,123 @@ class ListTestCase(TestCase):
 
     def test_required_list_against_missing_data(self):
         field = List(Integer())
-        with self.assertRaises(FieldValidationError) as context:
-            field.submit(None)
-        self.assertEqual(context.exception.data, {'list': 'This is required.'})
+        value, errors = field.submit(None)
+        self.assertEqual(errors, {'list': 'This is required.'})
 
     def test_required_list_against_empty_list(self):
         field = List(Integer())
-        with self.assertRaises(FieldValidationError) as context:
-            field.submit([])
-        self.assertEqual(context.exception.data, {'list': 'This is required.'})
+        value, errors = field.submit([])
+        self.assertEqual(errors, {'list': 'This is required.'})
 
     def test_optional_list_against_missing_data(self):
         field = List(Integer(), required=False)
-        value = field.submit(None)
+        value, errors = field.submit(None)
         self.assertEqual(value, [])
 
     def test_optional_list_against_empty_list(self):
         field = List(Integer(), required=False)
-        value = field.submit([])
+        value, errors = field.submit([])
         self.assertEqual(value, [])
 
     def test_default_values_against_none(self):
         field = List(Integer(), default=[1, 2, 3])
-        value = field.submit(None)
+        value, errors = field.submit(None)
         self.assertEqual(value, [1, 2, 3])
 
     def test_default_values_against_empty_list(self):
         field = List(Integer(), default=[1, 2, 3])
-        value = field.submit([])
+        value, errors = field.submit([])
         self.assertEqual(value, [1, 2, 3])
 
     def test_list_validation_against_valid_list(self):
         field = List(Integer())
-        numbers = field.submit([1, 2, 3])
-        self.assertEqual(numbers, [1, 2, 3])
+        value, errors = field.submit([1, 2, 3])
+        self.assertEqual(value, [1, 2, 3])
 
     def test_list_validation_against_valid_tuple(self):
         field = List(Integer())
-        numbers = field.submit((1, 2, 3))
-        self.assertEqual(numbers, [1, 2, 3])
+        value, errors = field.submit((1, 2, 3))
+        self.assertEqual(value, [1, 2, 3])
 
     def test_list_validation_return_new_cleaned_values_after_validation(self):
         field = List(Text())
-        texts = field.submit(['  foo  ', 'bar', 'biz'])
-        self.assertEqual(texts, ['foo', 'bar', 'biz'])
+        value, errors = field.submit(['  foo  ', 'bar', 'biz'])
+        self.assertEqual(value, ['foo', 'bar', 'biz'])
 
     def test_list_validation_against_invalid_type_number(self):
         field = List(Integer())
-        with self.assertRaises(FieldValidationError) as context:
-            field.submit(42)
-        self.assertEqual(context.exception.data, {'list': 'Invalid list.'})
+        value, errors = field.submit(42)
+        self.assertEqual(errors, {'list': 'Invalid list.'})
 
     def test_list_validation_against_invalid_type_dict(self):
         field = List(Integer())
-        with self.assertRaises(FieldValidationError) as context:
-            field.submit({'foo': 'bar'})
-        self.assertEqual(context.exception.data, {'list': 'Invalid list.'})
+        value, errors = field.submit({'foo': 'bar'})
+        self.assertEqual(errors, {'list': 'Invalid list.'})
 
-    def test_invalid_type_error_takes_precedence_over_required(self):
+    def test_invalid_type_errors_takes_precedence_over_required(self):
         field = List(Integer())
-        with self.assertRaises(FieldValidationError) as context:
-            field.submit({})
-        self.assertEqual(context.exception.data, {'list': 'Invalid list.'})
+        value, errors = field.submit({})
+        self.assertEqual(errors, {'list': 'Invalid list.'})
 
-    def test_invalid_type_error_takes_precedence_over_default(self):
+    def test_invalid_type_errors_takes_precedence_over_default(self):
         field = List(Integer(), default=[1, 2, 3])
-        with self.assertRaises(FieldValidationError) as context:
-            field.submit({})
-        self.assertEqual(context.exception.data, {'list': 'Invalid list.'})
+        value, errors = field.submit({})
+        self.assertEqual(errors, {'list': 'Invalid list.'})
 
     def test_list_validation_against_invalid_data(self):
         field = List(Integer())
-        with self.assertRaises(FieldValidationError) as context:
-            field.submit([1, 'a', 3])
-        self.assertEqual(context.exception.data, {1: 'Invalid number.'})
+        value, errors = field.submit([1, 'a', 3])
+        self.assertEqual(errors, {1: 'Invalid number.'})
 
     def test_min_constraint_against_valid_data(self):
         field = List(Integer(), min=3)
-        numbers = field.submit([1, 2, 3])
-        self.assertEqual(numbers, [1, 2, 3])
+        value, errors = field.submit([1, 2, 3])
+        self.assertEqual(value, [1, 2, 3])
 
     def test_min_constraint_against_invalid_data(self):
         field = List(Integer(), min=3)
-        with self.assertRaises(FieldValidationError) as context:
-            field.submit([1, 2])
-        self.assertEqual(context.exception.data, {'list': 'Must have at least 3 items.'})
+        value, errors = field.submit([1, 2])
+        self.assertEqual(errors, {'list': 'Must have at least 3 items.'})
 
     def test_max_constraint_against_valid_data(self):
         field = List(Integer(), max=3)
-        numbers = field.submit([1, 2, 3])
-        self.assertEqual(numbers, [1, 2, 3])
+        value, errors = field.submit([1, 2, 3])
+        self.assertEqual(value, [1, 2, 3])
 
     def test_max_constraint_against_invalid_data(self):
         field = List(Integer(), max=3)
-        with self.assertRaises(FieldValidationError) as context:
-            field.submit([1, 2, 3, 4])
-        self.assertEqual(context.exception.data, {'list': 'Must have no more than 3 items.'})
+        value, errors = field.submit([1, 2, 3, 4])
+        self.assertEqual(errors, {'list': 'Must have no more than 3 items.'})
 
     def test_form_list_validation_against_valid_data(self):
         field = List(ProfileForm)
-        data = field.submit([
+        value, errors = field.submit([
             {'name': 'John Doe', 'age': 32},
             {'name': 'Jane Doe', 'age': 31},
         ])
-        self.assertEqual(data, [
+        self.assertEqual(value, [
             {'name': 'John Doe', 'age': 32},
             {'name': 'Jane Doe', 'age': 31},
         ])
 
     def test_form_list_validation_against_invalid_data(self):
         field = List(ProfileForm)
-        with self.assertRaises(FieldValidationError) as context:
-            field.submit([
-                {'age': 18},
-                {'name': 'Jane Doe', 'age': 17},
-            ])
-        self.assertEqual(context.exception.data, {
+        value, errors = field.submit([
+            {'age': 18},
+            {'name': 'Jane Doe', 'age': 17},
+        ])
+        self.assertEqual(errors, {
             0: {'name': 'This is required.'},
             1: {'age': 'Must not be lower than 18.'}
         })
 
     def test_form_list_receives_cleaned_data_after_validation(self):
         field = List(ProfileForm)
-        data = field.submit([
+        value, errors = field.submit([
             {'name': '  John Doe  ', 'age': 32},
             {'name': 'Jane Doe', 'age': 31},
         ])
-        self.assertEqual(data, [
+        self.assertEqual(value, [
             {'name': 'John Doe', 'age': 32},
             {'name': 'Jane Doe', 'age': 31},
         ])

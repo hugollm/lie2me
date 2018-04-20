@@ -16,18 +16,17 @@ class BooleanTestCase(TestCase, CommonTests):
         field = Boolean()
         samples = [True, 'true', 'True', 'yes', 'Yes', 1, '1', 'on', 'On']
         for sample in samples:
-            value = field.submit(sample)
+            value, error = field.submit(sample)
             self.assertEqual(value, True)
 
     def test_false_values(self):
         field = Boolean()
         samples = [False, 'false', 'False', 'no', 'No', 0, '0', 'off', 'Off']
         for sample in samples:
-            value = field.submit(sample)
+            value, error = field.submit(sample)
             self.assertEqual(value, False)
 
     def test_invalid_value(self):
         field = Boolean()
-        with self.assertRaises(FieldValidationError) as context:
-            field.submit(42)
-        self.assertEqual(context.exception.data, 'Invalid boolean.')
+        value, error = field.submit(42)
+        self.assertEqual(error, 'Invalid boolean.')

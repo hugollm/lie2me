@@ -51,11 +51,11 @@ class List(Field):
         errors = {}
         for i, value in enumerate(values):
             if self._type_is_field():
-                try:
-                    new_value = self.type.submit(value)
+                new_value, error = self.type.submit(value)
+                if error is None:
                     new_values.append(new_value)
-                except FieldValidationError as e:
-                    errors[i] = e.data
+                else:
+                    errors[i] = error
             if self._type_is_form():
                 form = self.type(value)
                 form.submit()

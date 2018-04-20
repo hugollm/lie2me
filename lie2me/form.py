@@ -43,11 +43,11 @@ class Form(object):
     def _validate_fields(self):
         data = {}
         for key, field in self.fields.items():
-            try:
-                value = field.submit(self.data.get(key))
+            value, error = field.submit(self.data.get(key))
+            if error is None:
                 data[key] = value
-            except FieldValidationError as e:
-                self.errors[key] = e.data
+            else:
+                self.errors[key] = error
         return data
 
     def _validate_forms(self):

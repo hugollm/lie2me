@@ -35,9 +35,14 @@ class Field(object):
 
     def submit(self, value):
         try:
-            return self.validate(value)
+            new_value = self.validate(value)
         except exceptions.FieldAbortValidation as e:
-            return e.value
+            return e.value, None
+        except exceptions.FieldValidationError as e:
+            return value, e.data
+        if isinstance(new_value, exceptions.FieldValidationError):
+            raise exceptions.BadFieldValidationError()
+        return new_value, None
 
     def validate(self, value):
         if value is not None:

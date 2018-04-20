@@ -24,6 +24,13 @@ class InvalidFieldArgumentError(Exception):
         super(InvalidFieldArgumentError, self).__init__(message)
 
 
+class BadFieldValidationError(Exception):
+
+    def __init__(self):
+        message = 'Field validation returned an error instead of raising it.'
+        super(BadFieldValidationError, self).__init__(message)
+
+
 class BadFormValidationError(Exception):
 
     def __init__(self):
