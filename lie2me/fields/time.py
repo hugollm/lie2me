@@ -17,7 +17,7 @@ class Time(Field):
     }
 
     def __init__(self, *args, **kwargs):
-        super(Time, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.parsed_min = parse_time(self.min) if self.min else None
         self.parsed_max = parse_time(self.max) if self.max else None
         if self.min and self.parsed_min is None:
@@ -26,7 +26,7 @@ class Time(Field):
             raise ValueError('Invalid max time.')
 
     def validate(self, value):
-        value = super(Time, self).validate(value)
+        value = super().validate(value)
         value = parse_time(value)
         if value is None:
             raise self.error('type')

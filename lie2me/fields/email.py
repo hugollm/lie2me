@@ -9,7 +9,7 @@ class Email(Field):
     }
 
     def validate(self, value):
-        value = super(Email, self).validate(value)
+        value = super().validate(value)
         if len(value) > 254:
             raise self.error('type')
         if not re.match(r'^[^@]+@[^@]+\.[^@]+$', value):

@@ -14,7 +14,7 @@ class Decimal(Field):
     }
 
     def validate(self, value):
-        value = super(Decimal, self).validate(value)
+        value = super().validate(value)
         try:
             value = D(value)
         except:

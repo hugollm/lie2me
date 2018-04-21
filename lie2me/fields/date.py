@@ -17,7 +17,7 @@ class Date(Field):
     }
 
     def __init__(self, *args, **kwargs):
-        super(Date, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.parsed_min = self.parse(self.min) if self.min else None
         self.parsed_max = self.parse(self.max) if self.max else None
         if self.min and self.parsed_min is None:
@@ -26,7 +26,7 @@ class Date(Field):
             raise ValueError('Invalid max date.')
 
     def validate(self, value):
-        value = super(Date, self).validate(value)
+        value = super().validate(value)
         value = self.parse(value)
         if value is None:
             raise self.error('type')

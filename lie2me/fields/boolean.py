@@ -8,7 +8,7 @@ class Boolean(Field):
     }
 
     def validate(self, value):
-        value = super(Boolean, self).validate(value)
+        value = super().validate(value)
         value = value.lower()
         if value in ['true', 'yes', '1', 'on']:
             return True

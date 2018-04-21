@@ -93,7 +93,7 @@ class FieldTestCase(TestCase):
     def test_child_field_does_not_need_to_check_for_null_values_if_its_optional(self):
         class Boolean(Field):
             def validate(self, value):
-                value = super(Boolean, self).validate(value)
+                value = super().validate(value)
                 return bool(value)
         field = Boolean(required=False)
         value, error = field.submit(None)
@@ -117,7 +117,7 @@ class FieldTestCase(TestCase):
         class OneMessageTranslated(Field):
             messages = {'foo': 'Lorem ipsum dolor sit amet'}
             def validate(self, value):
-                value = super(OneMessageTranslated, self).validate(value)
+                value = super().validate(value)
                 raise self.error('foo')
         field = OneMessageTranslated()
         value, error = field.submit(42)

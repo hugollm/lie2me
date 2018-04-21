@@ -17,7 +17,7 @@ class DateTime(Field):
     }
 
     def __init__(self, *args, **kwargs):
-        super(DateTime, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.parsed_min = parse_datetime(self.min) if self.min else None
         self.parsed_max = parse_datetime(self.max) if self.max else None
         if self.min and self.parsed_min is None:
@@ -26,7 +26,7 @@ class DateTime(Field):
             raise ValueError('Invalid max datetime.')
 
     def validate(self, value):
-        value = super(DateTime, self).validate(value)
+        value = super().validate(value)
         value = parse_datetime(value)
         if value is None:
             raise self.error('type')

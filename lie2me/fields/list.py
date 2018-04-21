@@ -18,7 +18,7 @@ class List(Field):
         self.type = type
         if not self._type_is_field() and not self._type_is_form():
             raise InvalidListTypeError()
-        super(List, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def _type_is_field(self):
         return isinstance(self.type, Field)
@@ -66,5 +66,5 @@ class List(Field):
         return new_values, errors
 
     def error(self, message):
-        e = super(List, self).error(message)
+        e = super().error(message)
         raise FieldValidationError({'list': e.data})
