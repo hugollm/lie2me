@@ -33,19 +33,20 @@ class FieldSubmitTestCase(TestCase):
         self.assertEqual(value, None)
         self.assertEqual(error, 'This is required.')
 
-    def test_aborted_validation_returns_tuple(self):
+    def test_skipped_validation_returns_tuple(self):
         field = Field(required=False)
         value, error = field.submit(None)
         self.assertEqual(value, None)
         self.assertEqual(error, None)
 
-    def test_failed_submit_returns_the_original_value(self):
+    def test_invalid_submit_returns_the_original_value(self):
         class AlwaysInvalid(Field):
             def validate(self, value):
                 raise self.error('Invalid!')
         field = AlwaysInvalid()
-        value, error = field.submit(42)
-        self.assertEqual(value, 42)
+        input = object()
+        value, error = field.submit(input)
+        self.assertEqual(value, input)
 
     def test_returning_error_on_validate_instead_of_raising_triggers_exception(self):
         class InvalidField(Field):
@@ -107,7 +108,6 @@ class FieldDefaultTestCase(TestCase):
     def test_field_default_is_submitted_to_validation(self):
         class IncrementField(Field):
             def validate(self, value):
-                value = super().validate(value)
                 value = int(value)
                 return value + 1
         field = IncrementField(default='42')
