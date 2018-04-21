@@ -58,6 +58,16 @@ class FieldTestCase(TestCase):
         value, error = field.submit(None)
         self.assertEqual(value, '42')
 
+    def test_field_default_is_submitted_to_validation(self):
+        class IncrementField(Field):
+            def validate(self, value):
+                value = super().validate(value)
+                value = int(value)
+                return value + 1
+        field = IncrementField(default='42')
+        value, error = field.submit(None)
+        self.assertEqual(value, 43)
+
     def test_required_error_message(self):
         field = Field()
         value, error = field.submit(None)
