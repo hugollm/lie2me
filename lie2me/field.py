@@ -35,36 +35,36 @@ class Field(object):
 
     def submit(self, value):
         try:
-            new_value = self.validate(value)
-        except exceptions.FieldAbortValidation as e:
-            return e.value, None
+            new_value = self._process_value(value)
         except exceptions.FieldValidationError as e:
             return value, e.data
         if isinstance(new_value, exceptions.FieldValidationError):
             raise exceptions.BadFieldValidationError()
         return new_value, None
 
+    def _process_value(self, value):
+        if self.default is not None and self.is_empty(value):
+            value = self.default
+        if self.is_empty(value):
+            if self.required:
+                raise self.error('required')
+            else:
+                return self.empty_value()
+        return self.validate(value)
+
     def is_empty(self, value):
         return value is None or str(value).strip() is ''
 
+    def empty_value(self):
+        return None
+
     def validate(self, value):
-        if value is not None:
-            value = str(value).strip()
-        if not value and self.default is not None:
-            value = str(self.default).strip()
-        if not value and self.required:
-            raise self.error('required')
-        if not value:
-            raise self.abort(None)
         return value
 
     def error(self, message):
         message = self.messages.get(message, message)
         message = self.format_message(message)
         return exceptions.FieldValidationError(message)
-
-    def abort(self, value):
-        raise exceptions.FieldAbortValidation(value)
 
     def format_message(self, message):
         matches = re.findall(r'\{([a-zA-Z][a-zA-Z0-9_]*?)\}', message)

@@ -4,12 +4,6 @@ class FieldValidationError(Exception):
         self.data = data
 
 
-class FieldAbortValidation(Exception):
-
-    def __init__(self, value):
-        self.value = value
-
-
 class PositionalArgumentFieldError(Exception):
 
     def __init__(self):

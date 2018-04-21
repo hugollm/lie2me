@@ -26,17 +26,15 @@ class List(Field):
     def _type_is_form(self):
         return isinstance(self.type, type) and issubclass(self.type, Form)
 
+    def is_empty(self, value):
+        return value is None or value == []
+
+    def empty_value(self):
+        return []
+
     def validate(self, values):
-        if values is None:
-            values = []
         if not isinstance(values, list) and not isinstance(values, tuple):
             raise self.error('type')
-        if not values and self.default is not None:
-            values = self.default
-        if not values and self.required:
-            raise self.error('required')
-        if not values:
-            raise self.abort([])
         if self.min is not None and len(values) < self.min:
             raise self.error('min')
         if self.max is not None and len(values) > self.max:

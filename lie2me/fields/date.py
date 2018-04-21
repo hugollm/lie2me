@@ -26,7 +26,6 @@ class Date(Field):
             raise ValueError('Invalid max date.')
 
     def validate(self, value):
-        value = super().validate(value)
         value = self.parse(value)
         if value is None:
             raise self.error('type')

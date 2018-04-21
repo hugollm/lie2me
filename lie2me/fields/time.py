@@ -26,7 +26,6 @@ class Time(Field):
             raise ValueError('Invalid max time.')
 
     def validate(self, value):
-        value = super().validate(value)
         value = parse_time(value)
         if value is None:
             raise self.error('type')

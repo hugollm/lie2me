@@ -20,18 +20,9 @@ class Text(Field):
     }
 
     def validate(self, value):
-        if value is not None:
-            value = str(value)
-            if self.trim:
-                value = value.strip()
-        if not value and self.default is not None:
-            value = str(self.default)
-            if self.trim:
-                value = value.strip()
-        if not value and self.required:
-            raise self.error('required')
-        if not value:
-            raise self.abort(None)
+        value = str(value)
+        if self.trim:
+            value = value.strip()
         if self.min is not None and len(value) < self.min:
             raise self.error('min')
         if self.max is not None and len(value) > self.max:

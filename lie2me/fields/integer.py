@@ -13,7 +13,6 @@ class Integer(Field):
     }
 
     def validate(self, value):
-        value = super().validate(value)
         try:
             value = int(value)
         except:

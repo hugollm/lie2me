@@ -24,7 +24,7 @@ class FieldSubmitTestCase(TestCase):
     def test_valid_submit_returns_tuple(self):
         field = Field()
         value, error = field.submit(42)
-        self.assertEqual(value, '42')
+        self.assertEqual(value, 42)
         self.assertEqual(error, None)
 
     def test_invalid_submit_returns_tuple(self):
@@ -54,16 +54,6 @@ class FieldSubmitTestCase(TestCase):
         field = InvalidField()
         with self.assertRaises(exceptions.BadFieldValidationError):
             field.submit(42)
-
-    def test_validate_returns_value_converted_as_string(self):
-        field = Field()
-        value, error = field.submit(42)
-        self.assertEqual(value, '42')
-
-    def test_validated_values_are_trimmed_by_default(self):
-        field = Field()
-        value, error = field.submit('  42  ')
-        self.assertEqual(value, '42')
 
 
 class FieldRequiredTestCase(TestCase):
@@ -97,18 +87,36 @@ class FieldRequiredTestCase(TestCase):
         value, error = field.submit(None)
         self.assertEqual(value, None)
 
+    def test_empty_value_returned_when_field_is_optional_can_be_configured(self):
+        class List(Field):
+            def empty_value(self):
+                return []
+        field = List(required=False)
+        value, error = field.submit(None)
+        self.assertEqual(value, [])
+        self.assertEqual(error, None)
+
 
 class FieldDefaultTestCase(TestCase):
 
-    def test_field_with_a_default_value_is_never_required(self):
+    def test_field_with_a_default_value_is_not_required(self):
         field = Field(default=42)
         value, error = field.submit(None)
-        self.assertEqual(value, '42')
+        self.assertEqual(value, 42)
 
     def test_field_default_is_submitted_to_validation(self):
         class IncrementField(Field):
             def validate(self, value):
                 value = super().validate(value)
+                value = int(value)
+                return value + 1
+        field = IncrementField(default='42')
+        value, error = field.submit(None)
+        self.assertEqual(value, 43)
+
+    def test_field_default_is_submitted_to_validation_even_without_calling_super(self):
+        class IncrementField(Field):
+            def validate(self, value):
                 value = int(value)
                 return value + 1
         field = IncrementField(default='42')

@@ -13,7 +13,6 @@ class Float(Field):
     }
 
     def validate(self, value):
-        value = super().validate(value)
         try:
             value = float(value)
         except:
