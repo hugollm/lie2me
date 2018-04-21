@@ -44,6 +44,9 @@ class Field(object):
             raise exceptions.BadFieldValidationError()
         return new_value, None
 
+    def is_empty(self, value):
+        return value is None or str(value).strip() is ''
+
     def validate(self, value):
         if value is not None:
             value = str(value).strip()

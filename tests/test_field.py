@@ -2,7 +2,24 @@ from unittest import TestCase
 from lie2me import Field, exceptions
 
 
-class FieldTestCase(TestCase):
+class FieldConstructorTestCase(TestCase):
+
+    def test_field_does_not_accept_positional_arguments(self):
+        with self.assertRaises(exceptions.PositionalArgumentFieldError):
+            field = Field(42)
+
+    def test_field_raises_error_if_invalid_configuration_is_set(self):
+        with self.assertRaises(exceptions.InvalidFieldArgumentError):
+            field = Field(foo=42)
+
+    def test_child_field_does_not_need_custom_init_method_to_configure_its_attributes(self):
+        class AutomaticallyConfigured(Field):
+            min = 0
+        field = AutomaticallyConfigured(min=3)
+        self.assertEqual(field.min, 3)
+
+
+class FieldSubmitTestCase(TestCase):
 
     def test_valid_submit_returns_tuple(self):
         field = Field()
@@ -48,10 +65,40 @@ class FieldTestCase(TestCase):
         value, error = field.submit('  42  ')
         self.assertEqual(value, '42')
 
+
+class FieldRequiredTestCase(TestCase):
+
     def test_field_is_required_by_default(self):
         field = Field()
         value, error = field.submit(None)
         self.assertEqual(error, 'This is required.')
+
+    def test_required_error_message(self):
+        field = Field()
+        value, error = field.submit(None)
+        self.assertEqual(error, 'This is required.')
+
+    def test_empty_string_triggers_required_error(self):
+        field = Field()
+        value, error = field.submit('')
+        self.assertEqual(error, 'This is required.')
+
+    def test_string_with_only_spaces_triggers_required_error(self):
+        field = Field()
+        value, error = field.submit('  ')
+        self.assertEqual(error, 'This is required.')
+
+    def test_child_field_does_not_need_to_check_for_null_values_if_its_optional(self):
+        class Boolean(Field):
+            def validate(self, value):
+                value = super().validate(value)
+                return bool(value)
+        field = Boolean(required=False)
+        value, error = field.submit(None)
+        self.assertEqual(value, None)
+
+
+class FieldDefaultTestCase(TestCase):
 
     def test_field_with_a_default_value_is_never_required(self):
         field = Field(default=42)
@@ -68,20 +115,8 @@ class FieldTestCase(TestCase):
         value, error = field.submit(None)
         self.assertEqual(value, 43)
 
-    def test_required_error_message(self):
-        field = Field()
-        value, error = field.submit(None)
-        self.assertEqual(error, 'This is required.')
 
-    def test_empty_string_triggers_required_error(self):
-        field = Field()
-        value, error = field.submit('')
-        self.assertEqual(error, 'This is required.')
-
-    def test_string_with_only_spaces_triggers_required_error(self):
-        field = Field()
-        value, error = field.submit('  ')
-        self.assertEqual(error, 'This is required.')
+class FieldMessagesTestCase(TestCase):
 
     def test_field_instance_can_overwrite_specific_messages(self):
         field = Field(messages={'required': 'Required field'})
@@ -100,28 +135,14 @@ class FieldTestCase(TestCase):
         value, error = field.submit(42)
         self.assertEqual(error, 'Raw message.')
 
-    def test_child_field_does_not_need_to_check_for_null_values_if_its_optional(self):
-        class Boolean(Field):
+    def test_field_can_use_its_arguments_in_messages(self):
+        class ArgumentInMessage(Field):
+            min = 3
             def validate(self, value):
-                value = super().validate(value)
-                return bool(value)
-        field = Boolean(required=False)
-        value, error = field.submit(None)
-        self.assertEqual(value, None)
-
-    def test_child_field_does_not_need_custom_init_method_to_configure_its_attributes(self):
-        class AutomaticallyConfigured(Field):
-            min = 0
-        field = AutomaticallyConfigured(min=3)
-        self.assertEqual(field.min, 3)
-
-    def test_field_does_not_accept_positional_arguments(self):
-        with self.assertRaises(exceptions.PositionalArgumentFieldError):
-            field = Field(42)
-
-    def test_field_raises_error_if_invalid_configuration_is_set(self):
-        with self.assertRaises(exceptions.InvalidFieldArgumentError):
-            field = Field(foo=42)
+                raise self.error('Sample attributes: {min} {min} {required}')
+        field = ArgumentInMessage()
+        value, error = field.submit(42)
+        self.assertEqual(error, 'Sample attributes: 3 3 True')
 
     def test_allow_child_field_to_translate_one_message_without_touching_the_others(self):
         class OneMessageTranslated(Field):
@@ -141,12 +162,3 @@ class FieldTestCase(TestCase):
         field = RequiredMessageTranslated()
         value, error = field.submit(None)
         self.assertEqual(error, 'Lorem ipsum dolor sit amet')
-
-    def test_field_can_use_its_arguments_in_messages(self):
-        class ArgumentInMessage(Field):
-            min = 3
-            def validate(self, value):
-                raise self.error('Sample attributes: {min} {min} {required}')
-        field = ArgumentInMessage()
-        value, error = field.submit(42)
-        self.assertEqual(error, 'Sample attributes: 3 3 True')
