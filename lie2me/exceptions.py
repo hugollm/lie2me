@@ -32,15 +32,5 @@ class BadFormValidationError(Exception):
         super().__init__(message)
 
 
-class InvalidListTypeError(Exception):
-
-    def __init__(self):
-        message = 'List field needs type argument to be a form class or a field instance'
-        super().__init__(message)
-
-
-class InvalidDictModelError(Exception):
-
-    def __init__(self):
-        message = 'All keys must be field instances.'
-        super().__init__(message)
+class BadFieldConfiguration(Exception):
+    pass

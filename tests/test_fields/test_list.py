@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from lie2me.fields import List, Integer, Text
-from lie2me.exceptions import InvalidListTypeError
+from lie2me.exceptions import BadFieldConfiguration
 
 
 class ListTestCase(TestCase):
@@ -14,8 +14,9 @@ class ListTestCase(TestCase):
             List()
 
     def test_cannot_be_constructed_with_field_class_as_type(self):
-        with self.assertRaises(InvalidListTypeError):
+        with self.assertRaises(BadFieldConfiguration) as context:
             List(Integer)
+        self.assertEqual(str(context.exception), 'First argument must be a field instance.')
 
     def test_required_list_against_missing_data(self):
         field = List(Integer())

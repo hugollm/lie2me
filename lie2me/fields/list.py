@@ -1,5 +1,5 @@
 from .. import Form, Field
-from ..exceptions import FieldValidationError, InvalidListTypeError
+from ..exceptions import FieldValidationError, BadFieldConfiguration
 
 
 class List(Field):
@@ -15,7 +15,7 @@ class List(Field):
 
     def __init__(self, field, *args, **kwargs):
         if not isinstance(field, Field):
-            raise InvalidListTypeError()
+            raise BadFieldConfiguration('First argument must be a field instance.')
         self.field = field
         super().__init__(*args, **kwargs)
 

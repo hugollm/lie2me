@@ -1,5 +1,5 @@
 from ..field import Field
-from ..exceptions import FieldValidationError, InvalidDictModelError
+from ..exceptions import FieldValidationError, BadFieldConfiguration
 
 
 class Dict(Field):
@@ -13,7 +13,7 @@ class Dict(Field):
             fields = {}
         for key, field in fields.items():
             if not isinstance(field, Field):
-                raise InvalidDictModelError()
+                raise BadFieldConfiguration('First argument must be a dict of field instances.')
         return fields
 
     def submit(self, data):

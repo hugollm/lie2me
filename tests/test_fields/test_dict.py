@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from lie2me import Field
 from lie2me.fields import Dict
-from lie2me.exceptions import InvalidDictModelError
+from lie2me.exceptions import BadFieldConfiguration
 
 
 class DictTestCase(TestCase):
@@ -17,8 +17,9 @@ class DictTestCase(TestCase):
         })
 
     def test_field_cannot_be_constructed_with_invalid_dict_of_fields(self):
-        with self.assertRaises(InvalidDictModelError):
+        with self.assertRaises(BadFieldConfiguration) as context:
             Dict({'name': 'invalid field'})
+        self.assertEqual(str(context.exception), 'First argument must be a dict of field instances.')
 
     def test_empty_data_for_optional_submit_is_an_empty_dict(self):
         field = Dict(required=False)
