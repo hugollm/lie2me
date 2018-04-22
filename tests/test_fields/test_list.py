@@ -1,27 +1,19 @@
 from unittest import TestCase
 
-from lie2me import Form
 from lie2me.fields import List, Integer, Text
-from lie2me.exceptions import FieldValidationError, InvalidListTypeError
+from lie2me.exceptions import InvalidListTypeError
 
 
 class ListTestCase(TestCase):
 
-    def test_cannot_be_instantiated_without_type_argument(self):
+    def test_can_be_constructed_with_field_instance_as_the_first_argument(self):
+        List(Integer())
+
+    def test_cannot_be_constructed_without_arguments(self):
         with self.assertRaises(TypeError):
             List()
 
-    def test_can_be_instantiated_with_form_class_as_type(self):
-        List(Form)
-
-    def test_can_be_instantiated_with_field_instance_as_type(self):
-        List(Integer())
-
-    def test_cannot_be_instantiated_with_form_instance_as_type(self):
-        with self.assertRaises(InvalidListTypeError):
-            List(Form())
-
-    def test_cannot_be_instantiated_with_field_class_as_type(self):
+    def test_cannot_be_constructed_with_field_class_as_type(self):
         with self.assertRaises(InvalidListTypeError):
             List(Integer)
 
@@ -114,42 +106,3 @@ class ListTestCase(TestCase):
         field = List(Integer(), max=3)
         value, errors = field.submit([1, 2, 3, 4])
         self.assertEqual(errors, {'list': 'Must have no more than 3 items.'})
-
-    def test_form_list_validation_against_valid_data(self):
-        field = List(ProfileForm)
-        value, errors = field.submit([
-            {'name': 'John Doe', 'age': 32},
-            {'name': 'Jane Doe', 'age': 31},
-        ])
-        self.assertEqual(value, [
-            {'name': 'John Doe', 'age': 32},
-            {'name': 'Jane Doe', 'age': 31},
-        ])
-
-    def test_form_list_validation_against_invalid_data(self):
-        field = List(ProfileForm)
-        value, errors = field.submit([
-            {'age': 18},
-            {'name': 'Jane Doe', 'age': 17},
-        ])
-        self.assertEqual(errors, {
-            0: {'name': 'This is required.'},
-            1: {'age': 'Must not be lower than 18.'}
-        })
-
-    def test_form_list_receives_cleaned_data_after_validation(self):
-        field = List(ProfileForm)
-        value, errors = field.submit([
-            {'name': '  John Doe  ', 'age': 32},
-            {'name': 'Jane Doe', 'age': 31},
-        ])
-        self.assertEqual(value, [
-            {'name': 'John Doe', 'age': 32},
-            {'name': 'Jane Doe', 'age': 31},
-        ])
-
-
-class ProfileForm(Form):
-
-    name = Text()
-    age = Integer(min=18)
