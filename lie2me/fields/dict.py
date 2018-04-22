@@ -4,25 +4,17 @@ from ..exceptions import FieldValidationError, InvalidDictModelError
 
 class Dict(Field):
 
-    model = None
-
-    def __init__(self, model=None, *args, **kwargs):
-        self.model = model
-        if self.model is None:
-            self.model = {}
-        self._validate_model()
+    def __init__(self, fields=None, *args, **kwargs):
+        self.fields = self._validate_fields(fields)
         super().__init__(*args, **kwargs)
 
-    def _validate_model(self):
-        for key, field in self.model.items():
+    def _validate_fields(self, fields):
+        if fields is None:
+            fields = {}
+        for key, field in fields.items():
             if not isinstance(field, Field):
                 raise InvalidDictModelError()
-
-    def is_empty(self, value):
-        return value is None or value == {}
-
-    def empty_value(self):
-        return {}
+        return fields
 
     def submit(self, data):
         data, errors = super().submit(data)
@@ -30,10 +22,16 @@ class Dict(Field):
             errors = {}
         return data, errors
 
+    def is_empty(self, value):
+        return value is None or value == {}
+
+    def empty_value(self):
+        return {}
+
     def validate(self, data):
         new_data = {}
         errors = {}
-        for key, field in self.model.items():
+        for key, field in self.fields.items():
             value, error = field.submit(data.get(key))
             if error:
                 errors[key] = error
