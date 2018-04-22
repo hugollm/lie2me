@@ -5,18 +5,18 @@ from lie2me import Field, exceptions
 class FieldConstructorTestCase(TestCase):
 
     def test_field_does_not_accept_positional_arguments(self):
-        with self.assertRaises(exceptions.BadFieldConfiguration) as context:
+        with self.assertRaises(exceptions.BadConfiguration) as context:
             field = Field(42)
         self.assertEqual(str(context.exception), 'Positional arguments are not allowed in this field.')
 
     def test_field_raises_error_if_invalid_configuration_is_set(self):
-        with self.assertRaises(exceptions.BadFieldConfiguration):
+        with self.assertRaises(exceptions.BadConfiguration):
             field = Field(foo=42)
 
     def test_invalid_configuration_exception_informs_correct_key_and_field_type(self):
         class CustomField(Field):
             pass
-        with self.assertRaises(exceptions.BadFieldConfiguration) as context:
+        with self.assertRaises(exceptions.BadConfiguration) as context:
             field = CustomField(foo=42)
         self.assertEqual(str(context.exception), 'Invalid argument (foo) for field: CustomField')
 

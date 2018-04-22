@@ -4,7 +4,7 @@ class ValidationError(Exception):
         self.data = data
 
 
-class BadFieldConfiguration(Exception):
+class BadConfiguration(Exception):
     pass
 
 

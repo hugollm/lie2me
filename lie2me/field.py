@@ -1,5 +1,5 @@
 import re
-from .exceptions import BadFieldConfiguration, ValidationError, BadFieldValidationError
+from .exceptions import BadConfiguration, ValidationError, BadFieldValidationError
 
 
 class Field(object):
@@ -13,7 +13,7 @@ class Field(object):
 
     def __init__(self, *args, **kwargs):
         if args:
-            raise BadFieldConfiguration('Positional arguments are not allowed in this field.')
+            raise BadConfiguration('Positional arguments are not allowed in this field.')
         self.messages = self._assemble_class_messages()
         self._update_attributes(kwargs)
 
@@ -35,7 +35,7 @@ class Field(object):
 
     def _invalid_field_argument(self, key):
         message = 'Invalid argument ({}) for field: {}'.format(key, self.__class__.__name__)
-        return BadFieldConfiguration(message)
+        return BadConfiguration(message)
 
     def submit(self, value):
         try:
