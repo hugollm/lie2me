@@ -2,9 +2,17 @@ from unittest import TestCase
 
 from lie2me.fields import List, Integer, Text
 from lie2me.exceptions import BadConfiguration
+from .common_tests import CommonTests
 
 
-class ListTestCase(TestCase):
+class ListTestCase(TestCase, CommonTests):
+
+    def setUp(self):
+        self.Field = List
+        self.valid_default = [1, 2, 3]
+
+    def get_instance(self):
+        return List(Integer())
 
     def test_can_be_constructed_with_field_instance_as_the_first_argument(self):
         List(Integer())

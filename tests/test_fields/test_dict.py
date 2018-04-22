@@ -3,9 +3,17 @@ from unittest import TestCase
 from lie2me import Field
 from lie2me.fields import Dict
 from lie2me.exceptions import BadConfiguration
+from .common_tests import CommonTests
 
 
-class DictTestCase(TestCase):
+class DictTestCase(TestCase, CommonTests):
+
+    def setUp(self):
+        self.Field = Dict
+        self.valid_default = {'foo': 'bar'}
+
+    def get_instance(self):
+        return Dict({'foo': Field()})
 
     def test_field_can_be_constructed_without_arguments(self):
         field = Dict()

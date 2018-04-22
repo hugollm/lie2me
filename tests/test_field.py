@@ -85,9 +85,9 @@ class FieldRequiredTestCase(TestCase):
         value, error = field.submit('')
         self.assertEqual(error, 'This is required.')
 
-    def test_string_with_only_spaces_triggers_required_error(self):
+    def test_string_with_only_invisible_characters_triggers_required_error(self):
         field = Field()
-        value, error = field.submit('  ')
+        value, error = field.submit('  \r\n  ')
         self.assertEqual(error, 'This is required.')
 
     def test_child_field_does_not_need_to_check_for_null_values_if_its_optional(self):

@@ -4,10 +4,11 @@ from lie2me.fields import Password
 from .common_tests import CommonTests
 
 
-class PasswordTestCase(TestCase):
+class PasswordTestCase(TestCase, CommonTests):
 
     def setUp(self):
         self.Field = Password
+        self.valid_default = '123456'
 
     def test_valid_password(self):
         field = Password()

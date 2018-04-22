@@ -4,56 +4,35 @@ from lie2me import Field
 
 class CommonTests(object):
 
-    def test_optional_field_against_none_value(self):
-        field = self.Field(required=False)
-        value, error = field.submit(None)
-        self.assertEqual(field.submit(None), (None, None))
+    def get_instance(self):
+        return self.Field()
 
-    def test_optional_field_against_empty_string(self):
-        field = self.Field(required=False)
-        self.assertEqual(field.submit(''), (None, None))
+    def test_submitting_empty_value_on_required_field_returns_error(self):
+        field = self.get_instance()
+        field.required = True
+        value, error = field.submit(field.empty_value())
+        self.assertTrue(error)
 
-    def test_optional_field_against_invisible_characters(self):
-        field = self.Field(required=False)
-        self.assertEqual(field.submit('  \r\n  '), (None, None))
-
-    def test_required_field_against_none_value(self):
-        field = self.Field(required=True)
-        value, error = field.submit(None)
-        self.assertEqual(error, 'This is required.')
-
-    def test_required_field_against_empty_string(self):
-        field = self.Field(required=True)
-        value, error = field.submit('')
-        self.assertEqual(error, 'This is required.')
-
-    def test_required_field_against_invisible_characters(self):
-        field = self.Field(required=True)
-        value, error = field.submit('  \r\n  ')
-        self.assertEqual(error, 'This is required.')
+    def test_submitting_empty_value_on_optional_field_does_not_return_error(self):
+        field = self.get_instance()
+        field.required = False
+        value, error = field.submit(field.empty_value())
+        self.assertFalse(error)
 
     def test_field_is_required_by_default(self):
-        field = self.Field()
-        value, error = field.submit(None)
-        self.assertEqual(error, 'This is required.')
+        field = self.get_instance()
+        value, error = field.submit(field.empty_value())
+        self.assertTrue(error)
 
-    def test_field_with_default_is_never_required(self):
-        field = Field(default=self.valid_default, required=True)
-        self.assertEqual(field.submit(None), field.submit(self.valid_default))
-
-    def test_field_with_default_against_none_value(self):
-        field = self.Field(default=self.valid_default)
-        self.assertEqual(field.submit(None), field.submit(self.valid_default))
-
-    def test_field_with_default_against_empty_string(self):
-        field = self.Field(default=self.valid_default)
-        self.assertEqual(field.submit(''), field.submit(self.valid_default))
-
-    def test_field_with_default_against_invisible_characters(self):
-        field = self.Field(default=self.valid_default)
-        self.assertEqual(field.submit('  \r\n  '), field.submit(self.valid_default))
+    def test_field_with_default_is_not_required(self):
+        field = self.get_instance()
+        field.default = self.valid_default
+        value, error = field.submit(field.empty_value())
+        self.assertTrue(value)
+        self.assertFalse(error)
 
     def test_field_instance_can_overwrite_specific_messages(self):
-        field = self.Field(messages={'required': 'Lorem ipsum'})
+        field = self.get_instance()
+        field.messages = {'required': 'Lorem ipsum'}
         value, error = field.submit(None)
-        self.assertEqual(error, 'Lorem ipsum')
+        self.assertIn('Lorem ipsum', str(error))
