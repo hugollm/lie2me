@@ -36,9 +36,9 @@ class Field(object):
     def submit(self, value):
         try:
             new_value = self._process_value(value)
-        except exceptions.FieldValidationError as e:
+        except exceptions.ValidationError as e:
             return value, e.data
-        if isinstance(new_value, exceptions.FieldValidationError):
+        if isinstance(new_value, exceptions.ValidationError):
             raise exceptions.BadFieldValidationError()
         return new_value, None
 
@@ -64,7 +64,7 @@ class Field(object):
     def error(self, message):
         message = self.messages.get(message, message)
         message = self.format_message(message)
-        return exceptions.FieldValidationError(message)
+        return exceptions.ValidationError(message)
 
     def format_message(self, message):
         matches = re.findall(r'\{([a-zA-Z][a-zA-Z0-9_]*?)\}', message)

@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from lie2me.fields import Email
-from lie2me.exceptions import FieldValidationError, InvalidFieldArgumentError
+from lie2me.exceptions import InvalidFieldArgumentError
 
 from .common_tests import CommonTests
 

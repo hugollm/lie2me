@@ -1,8 +1,6 @@
 from unittest import TestCase
 
 from lie2me.fields import Password
-from lie2me.exceptions import FieldValidationError
-
 from .common_tests import CommonTests
 
 

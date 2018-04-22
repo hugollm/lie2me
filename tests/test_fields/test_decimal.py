@@ -2,8 +2,6 @@ from decimal import Decimal as D
 from unittest import TestCase
 
 from lie2me.fields import Decimal
-from lie2me.exceptions import FieldValidationError
-
 from .common_tests import CommonTests
 
 

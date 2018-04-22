@@ -1,7 +1,5 @@
 from unittest import TestCase
-
 from lie2me import Field
-from lie2me.exceptions import FieldValidationError
 
 
 class CommonTests(object):

@@ -1,5 +1,5 @@
 from .field import Field
-from .exceptions import FieldValidationError, BadFormValidationError
+from .exceptions import BadFormValidationError
 
 
 class Form(object):

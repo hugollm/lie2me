@@ -2,8 +2,6 @@ from datetime import date
 from unittest import TestCase
 
 from lie2me.fields import Date
-from lie2me.exceptions import FieldValidationError
-
 from .common_tests import CommonTests
 
 

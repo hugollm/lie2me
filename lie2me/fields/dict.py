@@ -1,5 +1,5 @@
 from ..field import Field
-from ..exceptions import FieldValidationError, BadFieldConfiguration
+from ..exceptions import ValidationError, BadFieldConfiguration
 
 
 class Dict(Field):
@@ -38,5 +38,5 @@ class Dict(Field):
             else:
                 new_data[key] = value
         if errors:
-            raise FieldValidationError(errors)
+            raise ValidationError(errors)
         return new_data

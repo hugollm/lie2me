@@ -2,8 +2,6 @@ from datetime import datetime, timedelta
 from unittest import TestCase
 
 from lie2me.fields import DateTime
-from lie2me.exceptions import FieldValidationError
-
 from .common_tests import CommonTests
 
 

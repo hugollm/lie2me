@@ -1,5 +1,5 @@
 from .. import Form, Field
-from ..exceptions import FieldValidationError, BadFieldConfiguration
+from ..exceptions import ValidationError, BadFieldConfiguration
 
 
 class List(Field):
@@ -41,9 +41,9 @@ class List(Field):
             else:
                 errors[i] = error
         if errors:
-            raise FieldValidationError(errors)
+            raise ValidationError(errors)
         return new_data
 
     def error(self, message):
         e = super().error(message)
-        raise FieldValidationError({'list': e.data})
+        raise ValidationError({'list': e.data})
