@@ -1,5 +1,5 @@
 import re
-from . import exceptions
+from .exceptions import BadFieldConfiguration, ValidationError, BadFieldValidationError
 
 
 class Field(object):
@@ -13,7 +13,7 @@ class Field(object):
 
     def __init__(self, *args, **kwargs):
         if args:
-            raise exceptions.PositionalArgumentFieldError()
+            raise BadFieldConfiguration('Positional arguments are not allowed in this field.')
         self.messages = self._assemble_class_messages()
         self._update_attributes(kwargs)
 
@@ -27,19 +27,23 @@ class Field(object):
     def _update_attributes(self, kwargs):
         for key, value in kwargs.items():
             if not hasattr(self, key):
-                raise exceptions.InvalidFieldArgumentError(self.__class__, key)
+                raise self._invalid_field_argument(key)
             if key == 'messages':
                 self.messages.update(value)
             else:
                 setattr(self, key, value)
 
+    def _invalid_field_argument(self, key):
+        message = 'Invalid argument ({}) for field: {}'.format(key, self.__class__.__name__)
+        return BadFieldConfiguration(message)
+
     def submit(self, value):
         try:
             new_value = self._process_value(value)
-        except exceptions.ValidationError as e:
+        except ValidationError as e:
             return value, e.data
-        if isinstance(new_value, exceptions.ValidationError):
-            raise exceptions.BadFieldValidationError()
+        if isinstance(new_value, ValidationError):
+            raise BadFieldValidationError()
         return new_value, None
 
     def _process_value(self, value):
@@ -64,7 +68,7 @@ class Field(object):
     def error(self, message):
         message = self.messages.get(message, message)
         message = self.format_message(message)
-        return exceptions.ValidationError(message)
+        return ValidationError(message)
 
     def format_message(self, message):
         matches = re.findall(r'\{([a-zA-Z][a-zA-Z0-9_]*?)\}', message)

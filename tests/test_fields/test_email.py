@@ -1,8 +1,6 @@
 from unittest import TestCase
 
 from lie2me.fields import Email
-from lie2me.exceptions import InvalidFieldArgumentError
-
 from .common_tests import CommonTests
 
 
@@ -36,7 +34,3 @@ class EmailTestCase(TestCase, CommonTests):
         field = Email()
         value, error = field.submit('foo@bar.com' + ('a' * 244))
         self.assertEqual(error, 'Invalid email.')
-
-    def test_email_field_does_not_accept_text_field_parameters(self):
-        with self.assertRaises(InvalidFieldArgumentError):
-            Email(min=3)
