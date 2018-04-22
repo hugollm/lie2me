@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from lie2me import Form, fields
-from lie2me.exceptions import BadFormValidationError
+from lie2me.exceptions import BadValidation
 
 
 class FormTestCase(TestCase):
@@ -89,8 +89,9 @@ class FormTestCase(TestCase):
 
     def test_form_without_errors_returning_none_in_validation_method_raises_exception(self):
         form = BadValidationForm()
-        with self.assertRaises(BadFormValidationError):
+        with self.assertRaises(BadValidation) as context:
             form.submit()
+        self.assertEqual(str(context.exception), 'Form validation did not return any data.')
 
     def test_nested_form_empty_data(self):
         form = ProfileForm()

@@ -1,5 +1,5 @@
 from .field import Field
-from .exceptions import BadFormValidationError
+from .exceptions import BadValidation
 
 
 class Form(object):
@@ -37,7 +37,7 @@ class Form(object):
         self.valid = not self.errors
         if self.valid:
             if data is None:
-                raise BadFormValidationError()
+                raise BadValidation('Form validation did not return any data.')
             self.data = data
 
     def _validate_fields(self):

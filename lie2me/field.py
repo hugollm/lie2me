@@ -1,5 +1,5 @@
 import re
-from .exceptions import BadConfiguration, ValidationError, BadFieldValidationError
+from .exceptions import ValidationError, BadConfiguration, BadValidation
 
 
 class Field(object):
@@ -43,7 +43,7 @@ class Field(object):
         except ValidationError as e:
             return value, e.data
         if isinstance(new_value, ValidationError):
-            raise BadFieldValidationError()
+            raise BadValidation('Field validation returned an error instead of raising it.')
         return new_value, None
 
     def _process_value(self, value):

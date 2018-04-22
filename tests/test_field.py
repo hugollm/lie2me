@@ -1,22 +1,24 @@
 from unittest import TestCase
+
 from lie2me import Field, exceptions
+from lie2me.exceptions import ValidationError, BadConfiguration, BadValidation
 
 
 class FieldConstructorTestCase(TestCase):
 
     def test_field_does_not_accept_positional_arguments(self):
-        with self.assertRaises(exceptions.BadConfiguration) as context:
+        with self.assertRaises(BadConfiguration) as context:
             field = Field(42)
         self.assertEqual(str(context.exception), 'Positional arguments are not allowed in this field.')
 
     def test_field_raises_error_if_invalid_configuration_is_set(self):
-        with self.assertRaises(exceptions.BadConfiguration):
+        with self.assertRaises(BadConfiguration):
             field = Field(foo=42)
 
     def test_invalid_configuration_exception_informs_correct_key_and_field_type(self):
         class CustomField(Field):
             pass
-        with self.assertRaises(exceptions.BadConfiguration) as context:
+        with self.assertRaises(BadConfiguration) as context:
             field = CustomField(foo=42)
         self.assertEqual(str(context.exception), 'Invalid argument (foo) for field: CustomField')
 
@@ -61,8 +63,9 @@ class FieldSubmitTestCase(TestCase):
             def validate(self, value):
                 return self.error('Invalid!')
         field = InvalidField()
-        with self.assertRaises(exceptions.BadFieldValidationError):
+        with self.assertRaises(BadValidation) as context:
             field.submit(42)
+        self.assertEqual(str(context.exception), 'Field validation returned an error instead of raising it.')
 
 
 class FieldRequiredTestCase(TestCase):
