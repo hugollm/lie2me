@@ -9,3 +9,4 @@ from .list import List
 from .date import Date
 from .datetime import DateTime
 from .time import Time
+from .dict import Dict
