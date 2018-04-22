@@ -22,8 +22,8 @@ class Dict(Field):
             errors = {}
         return data, errors
 
-    def is_empty(self, value):
-        return value is None or value == {}
+    def is_empty(self, data):
+        return data is None or data == {}
 
     def empty_value(self):
         return {}

@@ -19,30 +19,30 @@ class List(Field):
         self.field = field
         super().__init__(*args, **kwargs)
 
-    def is_empty(self, value):
-        return value is None or value == []
+    def is_empty(self, data):
+        return data is None or data == []
 
     def empty_value(self):
         return []
 
-    def validate(self, values):
-        if not isinstance(values, list) and not isinstance(values, tuple):
+    def validate(self, data):
+        if not isinstance(data, list) and not isinstance(data, tuple):
             raise self.error('type')
-        if self.min is not None and len(values) < self.min:
+        if self.min is not None and len(data) < self.min:
             raise self.error('min')
-        if self.max is not None and len(values) > self.max:
+        if self.max is not None and len(data) > self.max:
             raise self.error('max')
-        new_values = []
+        new_data = []
         errors = {}
-        for i, value in enumerate(values):
-            new_value, error = self.field.submit(value)
+        for i, value in enumerate(data):
+            value, error = self.field.submit(value)
             if error is None:
-                new_values.append(new_value)
+                new_data.append(value)
             else:
                 errors[i] = error
         if errors:
             raise FieldValidationError(errors)
-        return new_values
+        return new_data
 
     def error(self, message):
         e = super().error(message)
