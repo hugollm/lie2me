@@ -28,7 +28,6 @@ class CommonTests(object):
         field = self.get_instance()
         field.default = self.valid_default
         value, error = field.submit(field.empty_value())
-        self.assertTrue(value)
         self.assertFalse(error)
 
     def test_field_instance_can_overwrite_specific_messages(self):
